@@ -22,6 +22,17 @@ const Index = () => {
     setCurrentPage('confirmation');
   };
 
+  const handleBackToHome = () => {
+    setCurrentPage('home');
+    setSearchParams(null);
+    setSelectedTrip(null);
+  };
+
+  const handleBackToTrips = () => {
+    setCurrentPage('trips');
+    setSelectedTrip(null);
+  };
+
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'home':
@@ -32,6 +43,7 @@ const Index = () => {
             searchParams={searchParams} 
             onBookTrip={handleBookTrip}
             teamName={teamName}
+            onBack={handleBackToHome}
           />
         );
       case 'confirmation':
@@ -40,6 +52,7 @@ const Index = () => {
             selectedTrip={selectedTrip} 
             searchParams={searchParams}
             teamName={teamName}
+            onBack={handleBackToTrips}
           />
         );
       default:

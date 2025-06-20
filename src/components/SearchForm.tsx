@@ -7,7 +7,7 @@ const SearchForm = ({ onSearch }) => {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [travelers, setTravelers] = useState(1);
-  const [time, setTime] = useState('morning');
+  const [time, setTime] = useState('09:00');
 
   const handleSearch = () => {
     onSearch({
@@ -20,15 +20,15 @@ const SearchForm = ({ onSearch }) => {
   };
 
   return (
-    <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-2xl max-w-4xl mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+    <div className="bg-white/95 backdrop-blur-md rounded-3xl p-8 shadow-2xl max-w-6xl mx-auto border border-white/20 font-avenir">
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-6 items-end">
         {/* Travel Type */}
         <div className="md:col-span-1">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Travel Type</label>
+          <label className="block text-sm font-medium text-gray-700 mb-3 font-avenir">Travel Type</label>
           <select 
             value={travelType}
             onChange={(e) => setTravelType(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white font-avenir text-gray-800 shadow-sm"
           >
             <option value="flights">Flights</option>
             <option value="trains">Trains</option>
@@ -38,61 +38,58 @@ const SearchForm = ({ onSearch }) => {
 
         {/* Check-in Date */}
         <div className="md:col-span-1">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Check-in</label>
+          <label className="block text-sm font-medium text-gray-700 mb-3 font-avenir">Check-in</label>
           <div className="relative">
             <input
               type="date"
               value={checkIn}
               onChange={(e) => setCheckIn(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white font-avenir text-gray-800 shadow-sm"
             />
-            <Calendar className="absolute right-3 top-3 w-5 h-5 text-gray-400 pointer-events-none" />
+            <Calendar className="absolute right-4 top-4 w-5 h-5 text-gray-400 pointer-events-none" />
           </div>
         </div>
 
         {/* Check-out Date */}
         <div className="md:col-span-1">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Check-out</label>
+          <label className="block text-sm font-medium text-gray-700 mb-3 font-avenir">Check-out</label>
           <div className="relative">
             <input
               type="date"
               value={checkOut}
               onChange={(e) => setCheckOut(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white font-avenir text-gray-800 shadow-sm"
             />
-            <Calendar className="absolute right-3 top-3 w-5 h-5 text-gray-400 pointer-events-none" />
+            <Calendar className="absolute right-4 top-4 w-5 h-5 text-gray-400 pointer-events-none" />
           </div>
         </div>
 
         {/* Travelers */}
         <div className="md:col-span-1">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Travelers</label>
+          <label className="block text-sm font-medium text-gray-700 mb-3 font-avenir">Travelers</label>
           <div className="relative">
             <input
               type="number"
               min="1"
               value={travelers}
               onChange={(e) => setTravelers(parseInt(e.target.value))}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white font-avenir text-gray-800 shadow-sm"
             />
-            <User className="absolute right-3 top-3 w-5 h-5 text-gray-400 pointer-events-none" />
+            <User className="absolute right-4 top-4 w-5 h-5 text-gray-400 pointer-events-none" />
           </div>
         </div>
 
-        {/* Time Option */}
+        {/* Time Selection */}
         <div className="md:col-span-1">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
+          <label className="block text-sm font-medium text-gray-700 mb-3 font-avenir">Time</label>
           <div className="relative">
-            <select 
+            <input
+              type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
-            >
-              <option value="morning">Morning</option>
-              <option value="afternoon">Afternoon</option>
-              <option value="evening">Evening</option>
-            </select>
-            <Clock className="absolute right-3 top-3 w-5 h-5 text-gray-400 pointer-events-none" />
+              className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white font-avenir text-gray-800 shadow-sm appearance-none"
+            />
+            <Clock className="absolute right-4 top-4 w-5 h-5 text-gray-400 pointer-events-none" />
           </div>
         </div>
 
@@ -100,7 +97,7 @@ const SearchForm = ({ onSearch }) => {
         <div className="md:col-span-1">
           <button
             onClick={handleSearch}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center space-x-2"
+            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white p-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-105 font-avenir"
           >
             <Search className="w-5 h-5" />
             <span>Search</span>

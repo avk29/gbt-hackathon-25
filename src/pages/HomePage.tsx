@@ -5,7 +5,7 @@ import SearchForm from '../components/SearchForm';
 
 const HomePage = ({ onSearch, teamName }) => {
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-50 to-white">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-50 to-white font-avenir">
       {/* Background */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -21,21 +21,18 @@ const HomePage = ({ onSearch, teamName }) => {
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6">
         <div className="text-center mb-12 animate-fade-in-up">
           <div className="mb-8">
-            <h1 className="text-6xl md:text-8xl font-bold text-white mb-4 tracking-tight">
+            <h1 className="text-6xl md:text-8xl font-bold text-white mb-4 tracking-tight font-avenir">
               Amex GBT
             </h1>
-            <p className="text-2xl md:text-3xl text-blue-200 font-light tracking-wide">
+            <p className="text-2xl md:text-3xl text-blue-200 font-light tracking-wide font-avenir">
               Great Ideas Travel
             </p>
           </div>
           
           <div className="mb-8">
-            <h2 className="text-3xl md:text-4xl text-white font-light">
+            <h2 className="text-3xl md:text-4xl text-white font-light font-avenir">
               Welcome back, <span className="font-semibold text-blue-300">{teamName}</span>
             </h2>
-            <p className="text-lg text-white/80 mt-2">
-              Start booking travel for your teams with ease
-            </p>
           </div>
         </div>
         
@@ -46,10 +43,10 @@ const HomePage = ({ onSearch, teamName }) => {
         
         {/* Additional Info */}
         <div className="mt-12 text-center animate-fade-in-up" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
-          <p className="text-white/70 text-sm">
+          <p className="text-white/70 text-sm font-avenir">
             Book your next adventure today! Stop waiting for the right moment to explore the world.
           </p>
-          <p className="text-white/70 text-sm mt-1">
+          <p className="text-white/70 text-sm mt-1 font-avenir">
             Start your journey of getting unforgettable precious moments with us.
           </p>
         </div>

@@ -112,6 +112,11 @@
   }
 }
 
+/* Avenir font utility class */
+.font-avenir {
+  font-family: 'Avenir', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
 /* Enhanced animations for modern feel */
 @keyframes fadeInUp {
   from {

@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import Header from '../components/Header';
 import TripCard from '../components/TripCard';
 import tripData from '../data/tripData.json';
 
-const TripSelectionPage = ({ searchParams, onBookTrip, teamName, onBack }) => {
+const TripSelectionPage = ({ searchParams, onBookTrip, onOtherDestination, teamName, onBack }) => {
   const [selectedTrip, setSelectedTrip] = useState(null);
   const [trips, setTrips] = useState([]);
 
@@ -34,7 +33,11 @@ const TripSelectionPage = ({ searchParams, onBookTrip, teamName, onBack }) => {
   const handleBookNow = () => {
     if (selectedTrip) {
       const trip = trips.find(t => t.id === selectedTrip);
-      onBookTrip(trip, searchParams);
+      if (trip.id === 'other') {
+        onOtherDestination(searchParams);
+      } else {
+        onBookTrip(trip, searchParams);
+      }
     }
   };
 

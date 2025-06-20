@@ -11,26 +11,31 @@ const Index = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [searchParams, setSearchParams] = useState(null);
   const [selectedTrip, setSelectedTrip] = useState(null);
+  const [previousPage, setPreviousPage] = useState('home');
   const teamName = tripData.teamInfo.teamName;
 
   const handleSearch = (params) => {
     setSearchParams(params);
+    setPreviousPage('home');
     setCurrentPage('trips');
   };
 
   const handleBookTrip = (trip, params) => {
     setSelectedTrip(trip);
     setSearchParams(params);
+    setPreviousPage(currentPage);
     setCurrentPage('confirmation');
   };
 
   const handleOtherDestination = (params) => {
     setSearchParams(params);
+    setPreviousPage('trips');
     setCurrentPage('destination-search');
   };
 
   const handleDestinationSearch = (params) => {
     setSearchParams(params);
+    setPreviousPage('destination-search');
     setCurrentPage('search-results');
   };
 
@@ -73,6 +78,7 @@ const Index = () => {
     
     setSelectedTrip(trip);
     setSearchParams(params);
+    setPreviousPage('search-results');
     setCurrentPage('confirmation');
   };
 
@@ -80,20 +86,33 @@ const Index = () => {
     setCurrentPage('home');
     setSearchParams(null);
     setSelectedTrip(null);
+    setPreviousPage('home');
   };
 
   const handleBackToTrips = () => {
     setCurrentPage('trips');
     setSelectedTrip(null);
+    setPreviousPage('home');
   };
 
   const handleBackToDestinationSearch = () => {
     setCurrentPage('destination-search');
     setSelectedTrip(null);
+    setPreviousPage('trips');
   };
 
   const handleBackToSearchResults = () => {
     setCurrentPage('search-results');
+    setSelectedTrip(null);
+    setPreviousPage('destination-search');
+  };
+
+  const handleBackFromConfirmation = () => {
+    if (previousPage === 'search-results') {
+      setCurrentPage('search-results');
+    } else {
+      setCurrentPage('trips');
+    }
     setSelectedTrip(null);
   };
 
@@ -135,7 +154,7 @@ const Index = () => {
             selectedTrip={selectedTrip} 
             searchParams={searchParams}
             teamName={teamName}
-            onBack={currentPage === 'search-results' ? handleBackToSearchResults : handleBackToTrips}
+            onBack={handleBackFromConfirmation}
           />
         );
       default:

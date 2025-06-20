@@ -1,12 +1,55 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState } from 'react';
+import HomePage from './HomePage';
+import TripSelectionPage from './TripSelectionPage';
+import ConfirmationPage from './ConfirmationPage';
+import tripData from '../data/tripData.json';
 
 const Index = () => {
+  const [currentPage, setCurrentPage] = useState('home');
+  const [searchParams, setSearchParams] = useState(null);
+  const [selectedTrip, setSelectedTrip] = useState(null);
+  const teamName = tripData.teamInfo.teamName;
+
+  const handleSearch = (params) => {
+    setSearchParams(params);
+    setCurrentPage('trips');
+  };
+
+  const handleBookTrip = (trip, params) => {
+    setSelectedTrip(trip);
+    setSearchParams(params);
+    setCurrentPage('confirmation');
+  };
+
+  const renderCurrentPage = () => {
+    switch (currentPage) {
+      case 'home':
+        return <HomePage onSearch={handleSearch} teamName={teamName} />;
+      case 'trips':
+        return (
+          <TripSelectionPage 
+            searchParams={searchParams} 
+            onBookTrip={handleBookTrip}
+            teamName={teamName}
+          />
+        );
+      case 'confirmation':
+        return (
+          <ConfirmationPage 
+            selectedTrip={selectedTrip} 
+            searchParams={searchParams}
+            teamName={teamName}
+          />
+        );
+      default:
+        return <HomePage onSearch={handleSearch} teamName={teamName} />;
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="font-sans">
+      {renderCurrentPage()}
     </div>
   );
 };

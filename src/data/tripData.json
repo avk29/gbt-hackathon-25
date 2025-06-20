@@ -1,0 +1,111 @@
+
+{
+  "preExistingTrips": [
+    {
+      "id": "paris",
+      "cityName": "Paris",
+      "image": "https://images.unsplash.com/photo-1502602898536-47ad22581b52",
+      "country": "France",
+      "duration": {
+        "nights": 4,
+        "days": 5
+      },
+      "pricePerPerson": 1250,
+      "flightDetails": {
+        "airline": "Air France",
+        "flightNumber": "AF 1234",
+        "departure": "08:30",
+        "arrival": "10:45",
+        "class": "Business",
+        "seatNumber": "2A",
+        "luggageAllowance": "2 x 23kg"
+      },
+      "hotelDetails": {
+        "name": "Le Meurice",
+        "roomType": "Deluxe Suite",
+        "roomNumber": "402",
+        "checkIn": "15:00",
+        "checkOut": "11:00",
+        "amenities": ["WiFi", "Spa", "Gym", "Room Service"]
+      },
+      "trainDetails": {
+        "service": "Eurostar",
+        "trainNumber": "ES 9142",
+        "class": "Standard Premier",
+        "seatNumber": "12B",
+        "amenities": ["WiFi", "Power Socket", "Light Meal"]
+      },
+      "meals": "Breakfast included",
+      "pickupDrop": "Airport transfer included",
+      "intercity": true
+    },
+    {
+      "id": "newyork",
+      "cityName": "New York",
+      "image": "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9",
+      "country": "USA",
+      "duration": {
+        "nights": 3,
+        "days": 4
+      },
+      "pricePerPerson": 1680,
+      "flightDetails": {
+        "airline": "Delta Airlines",
+        "flightNumber": "DL 789",
+        "departure": "14:20",
+        "arrival": "17:35",
+        "class": "Business",
+        "seatNumber": "1C",
+        "luggageAllowance": "2 x 23kg"
+      },
+      "hotelDetails": {
+        "name": "The Plaza Hotel",
+        "roomType": "Executive Room",
+        "roomNumber": "1205",
+        "checkIn": "16:00",
+        "checkOut": "12:00",
+        "amenities": ["WiFi", "Concierge", "Fitness Center", "Business Center"]
+      },
+      "meals": "Continental breakfast",
+      "pickupDrop": "Luxury car service",
+      "intercity": false
+    },
+    {
+      "id": "london",
+      "cityName": "London",
+      "image": "https://images.unsplash.com/photo-1533929736458-ca588d08c8be",
+      "country": "UK",
+      "duration": {
+        "nights": 2,
+        "days": 3
+      },
+      "pricePerPerson": 980,
+      "flightDetails": {
+        "airline": "British Airways",
+        "flightNumber": "BA 456",
+        "departure": "11:15",
+        "arrival": "12:30",
+        "class": "Business",
+        "seatNumber": "3D",
+        "luggageAllowance": "2 x 23kg"
+      },
+      "hotelDetails": {
+        "name": "The Savoy",
+        "roomType": "River View Suite",
+        "roomNumber": "815",
+        "checkIn": "15:00",
+        "checkOut": "11:00",
+        "amenities": ["WiFi", "Butler Service", "Gym", "Thames View"]
+      },
+      "meals": "Full English breakfast",
+      "pickupDrop": "Private car with driver",
+      "intercity": true
+    }
+  ],
+  "teamInfo": {
+    "teamName": "Team Amex",
+    "userName": "John Anderson",
+    "managerApproval": true,
+    "department": "Finance"
+  }
+}

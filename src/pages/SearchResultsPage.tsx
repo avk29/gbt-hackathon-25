@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Filter, Plane, Train, Building, Clock, MapPin, Star, Wifi, Coffee, Users } from 'lucide-react';
+import { ArrowLeft, Filter, Plane, Train, Building, Clock, MapPin, Star, Wifi, Coffee, Users, ChevronDown } from 'lucide-react';
 import Header from '../components/Header';
 
 const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
@@ -15,7 +14,6 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading and generate mock results
     const timer = setTimeout(() => {
       const mockResults = generateMockResults();
       setSearchResults(mockResults);
@@ -98,18 +96,6 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
           checkIn: '15:00',
           checkOut: '11:00',
           amenities: ['WiFi', 'Spa', 'Pool', 'Gym', 'Restaurant']
-        },
-        {
-          id: 'hotel-2',
-          type: 'hotel',
-          name: 'The Oberoi Mumbai',
-          rating: 5,
-          price: 22000,
-          location: 'Nariman Point, Mumbai',
-          roomType: 'Premier Room',
-          checkIn: '14:00',
-          checkOut: '12:00',
-          amenities: ['WiFi', 'Spa', 'Pool', 'Business Center']
         }
       );
     }
@@ -122,102 +108,49 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
   };
 
   const renderFlightCard = (result) => (
-    <div key={result.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
+    <div key={result.id} className="bg-white rounded-lg border border-gray-200 p-6 mb-4 hover:shadow-lg transition-shadow duration-200">
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-            <Plane className="w-6 h-6 text-blue-600" />
+        <div className="flex items-center space-x-4">
+          <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+            <Plane className="w-6 h-6 text-orange-600" />
           </div>
           <div>
-            <h3 className="font-bold text-gray-900 font-avenir">{result.airline}</h3>
-            <p className="text-sm text-gray-500 font-avenir">{result.flightNumber} • {result.aircraft}</p>
+            <h3 className="text-lg font-semibold text-gray-900 font-avenir">{result.airline}</h3>
+            <p className="text-sm text-gray-500 font-avenir">{result.flightNumber}</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold text-gray-900 font-avenir">₹{result.price.toLocaleString()}</p>
-          <p className="text-sm text-gray-500 font-avenir">{result.class}</p>
+          <div className="text-2xl font-bold text-orange-600 font-avenir">₹{result.price.toLocaleString()}</div>
+          <div className="text-sm text-gray-500 font-avenir">{result.class}</div>
         </div>
       </div>
       
-      <div className="grid grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-3 gap-4 mb-4 py-4 bg-gray-50 rounded-lg">
         <div className="text-center">
-          <p className="text-xl font-bold text-gray-900 font-avenir">{result.departure}</p>
-          <p className="text-sm text-gray-500 font-avenir">Departure</p>
+          <div className="text-xl font-bold text-gray-900 font-avenir">{result.departure}</div>
+          <div className="text-sm text-gray-500 font-avenir">DEL</div>
         </div>
         <div className="text-center">
-          <p className="text-sm text-gray-500 font-avenir">{result.duration}</p>
+          <div className="text-sm text-gray-500 font-avenir">{result.duration}</div>
           <div className="flex items-center justify-center my-1">
-            <div className="h-px bg-gray-300 flex-1"></div>
-            <div className="mx-2 w-2 h-2 bg-gray-400 rounded-full"></div>
-            <div className="h-px bg-gray-300 flex-1"></div>
+            <div className="h-px bg-orange-300 flex-1"></div>
+            <div className="mx-2 w-2 h-2 bg-orange-400 rounded-full"></div>
+            <div className="h-px bg-orange-300 flex-1"></div>
           </div>
-          <p className="text-sm text-gray-500 font-avenir">{result.stops}</p>
+          <div className="text-sm text-gray-500 font-avenir">{result.stops}</div>
         </div>
         <div className="text-center">
-          <p className="text-xl font-bold text-gray-900 font-avenir">{result.arrival}</p>
-          <p className="text-sm text-gray-500 font-avenir">Arrival</p>
+          <div className="text-xl font-bold text-gray-900 font-avenir">{result.arrival}</div>
+          <div className="text-sm text-gray-500 font-avenir">BOM</div>
         </div>
       </div>
 
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <span className="text-sm text-gray-600 font-avenir">Route: {result.route}</span>
-          <span className="text-sm text-gray-600 font-avenir">Baggage: {result.luggageAllowance}</span>
-        </div>
-        <button
-          onClick={() => handleSelectResult(result)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-medium transition-colors font-avenir"
-        >
-          Select
-        </button>
-      </div>
-    </div>
-  );
-
-  const renderTrainCard = (result) => (
-    <div key={result.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-            <Train className="w-6 h-6 text-green-600" />
-          </div>
-          <div>
-            <h3 className="font-bold text-gray-900 font-avenir">{result.service}</h3>
-            <p className="text-sm text-gray-500 font-avenir">{result.trainNumber}</p>
-          </div>
-        </div>
-        <div className="text-right">
-          <p className="text-2xl font-bold text-gray-900 font-avenir">₹{result.price.toLocaleString()}</p>
-          <p className="text-sm text-gray-500 font-avenir">{result.class}</p>
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        <div className="text-center">
-          <p className="text-xl font-bold text-gray-900 font-avenir">{result.departure}</p>
-          <p className="text-sm text-gray-500 font-avenir">Departure</p>
-        </div>
-        <div className="text-center">
-          <p className="text-sm text-gray-500 font-avenir">{result.duration}</p>
-          <div className="flex items-center justify-center my-1">
-            <div className="h-px bg-gray-300 flex-1"></div>
-            <div className="mx-2 w-2 h-2 bg-gray-400 rounded-full"></div>
-            <div className="h-px bg-gray-300 flex-1"></div>
-          </div>
-          <p className="text-sm text-gray-500 font-avenir">Route: {result.route}</p>
-        </div>
-        <div className="text-center">
-          <p className="text-xl font-bold text-gray-900 font-avenir">{result.arrival}</p>
-          <p className="text-sm text-gray-500 font-avenir">Arrival</p>
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <span className="text-sm text-gray-600 font-avenir">Seat: {result.seatNumber}</span>
-          <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-4 text-sm text-gray-600">
+          <span className="font-avenir">Baggage: {result.luggageAllowance}</span>
+          <div className="flex items-center space-x-1">
             {result.amenities.map((amenity, index) => (
-              <span key={index} className="text-xs bg-gray-100 px-2 py-1 rounded-full text-gray-600 font-avenir">
+              <span key={index} className="bg-gray-100 px-2 py-1 rounded text-xs font-avenir">
                 {amenity}
               </span>
             ))}
@@ -225,23 +158,82 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
         </div>
         <button
           onClick={() => handleSelectResult(result)}
-          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-xl font-medium transition-colors font-avenir"
+          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg font-medium transition-colors font-avenir"
         >
-          Select
+          Select Flight
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderTrainCard = (result) => (
+    <div key={result.id} className="bg-white rounded-lg border border-gray-200 p-6 mb-4 hover:shadow-lg transition-shadow duration-200">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-4">
+          <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+            <Train className="w-6 h-6 text-green-600" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 font-avenir">{result.service}</h3>
+            <p className="text-sm text-gray-500 font-avenir">{result.trainNumber}</p>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="text-2xl font-bold text-green-600 font-avenir">₹{result.price.toLocaleString()}</div>
+          <div className="text-sm text-gray-500 font-avenir">{result.class}</div>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-3 gap-4 mb-4 py-4 bg-gray-50 rounded-lg">
+        <div className="text-center">
+          <div className="text-xl font-bold text-gray-900 font-avenir">{result.departure}</div>
+          <div className="text-sm text-gray-500 font-avenir">NDLS</div>
+        </div>
+        <div className="text-center">
+          <div className="text-sm text-gray-500 font-avenir">{result.duration}</div>
+          <div className="flex items-center justify-center my-1">
+            <div className="h-px bg-green-300 flex-1"></div>
+            <div className="mx-2 w-2 h-2 bg-green-400 rounded-full"></div>
+            <div className="h-px bg-green-300 flex-1"></div>
+          </div>
+          <div className="text-sm text-gray-500 font-avenir">Direct</div>
+        </div>
+        <div className="text-center">
+          <div className="text-xl font-bold text-gray-900 font-avenir">{result.arrival}</div>
+          <div className="text-sm text-gray-500 font-avenir">CSMT</div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4 text-sm text-gray-600">
+          <span className="font-avenir">Seat: {result.seatNumber}</span>
+          <div className="flex items-center space-x-1">
+            {result.amenities.map((amenity, index) => (
+              <span key={index} className="bg-gray-100 px-2 py-1 rounded text-xs font-avenir">
+                {amenity}
+              </span>
+            ))}
+          </div>
+        </div>
+        <button
+          onClick={() => handleSelectResult(result)}
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors font-avenir"
+        >
+          Select Train
         </button>
       </div>
     </div>
   );
 
   const renderHotelCard = (result) => (
-    <div key={result.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
+    <div key={result.id} className="bg-white rounded-lg border border-gray-200 p-6 mb-4 hover:shadow-lg transition-shadow duration-200">
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+        <div className="flex items-center space-x-4">
+          <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
             <Building className="w-6 h-6 text-purple-600" />
           </div>
           <div>
-            <h3 className="font-bold text-gray-900 font-avenir">{result.name}</h3>
+            <h3 className="text-lg font-semibold text-gray-900 font-avenir">{result.name}</h3>
             <div className="flex items-center space-x-1">
               {[...Array(result.rating)].map((_, i) => (
                 <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -250,47 +242,44 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
           </div>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold text-gray-900 font-avenir">₹{result.price.toLocaleString()}</p>
-          <p className="text-sm text-gray-500 font-avenir">per night</p>
+          <div className="text-2xl font-bold text-purple-600 font-avenir">₹{result.price.toLocaleString()}</div>
+          <div className="text-sm text-gray-500 font-avenir">per night</div>
         </div>
       </div>
       
-      <div className="mb-4">
-        <p className="text-sm text-gray-600 font-avenir mb-2">
-          <MapPin className="w-4 h-4 inline mr-1" />
-          {result.location}
-        </p>
-        <p className="text-sm font-medium text-gray-700 font-avenir">{result.roomType}</p>
-        <p className="text-xs text-gray-500 font-avenir">Check-in: {result.checkIn} • Check-out: {result.checkOut}</p>
+      <div className="mb-4 p-4 bg-gray-50 rounded-lg">
+        <div className="flex items-center space-x-2 mb-2">
+          <MapPin className="w-4 h-4 text-gray-500" />
+          <span className="text-sm text-gray-600 font-avenir">{result.location}</span>
+        </div>
+        <div className="text-sm font-medium text-gray-700 font-avenir">{result.roomType}</div>
+        <div className="text-xs text-gray-500 font-avenir">Check-in: {result.checkIn} • Check-out: {result.checkOut}</div>
       </div>
 
       <div className="flex items-center justify-between">
         <div className="flex flex-wrap gap-1">
           {result.amenities.slice(0, 4).map((amenity, index) => (
-            <span key={index} className="text-xs bg-gray-100 px-2 py-1 rounded-full text-gray-600 font-avenir">
+            <span key={index} className="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600 font-avenir">
               {amenity}
             </span>
           ))}
-          {result.amenities.length > 4 && (
-            <span className="text-xs text-gray-500 font-avenir">+{result.amenities.length - 4} more</span>
-          )}
         </div>
         <button
           onClick={() => handleSelectResult(result)}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-xl font-medium transition-colors font-avenir"
+          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-medium transition-colors font-avenir"
         >
-          Select
+          Select Hotel
         </button>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 font-avenir">
       <Header teamName={teamName} />
       
       <div className="pt-24 px-6 pb-20">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center space-x-4">
@@ -305,18 +294,33 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
               <h1 className="text-2xl font-bold text-gray-900 font-avenir">Search Results</h1>
             </div>
             
-            <button className="flex items-center space-x-2 bg-white border border-gray-200 px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors">
-              <Filter className="w-4 h-4" />
-              <span className="font-medium font-avenir">Filters</span>
-            </button>
+            <div className="flex items-center space-x-4">
+              <button className="flex items-center space-x-2 bg-white border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                <Filter className="w-4 h-4 text-gray-600" />
+                <span className="font-medium font-avenir text-gray-700">Filters</span>
+                <ChevronDown className="w-4 h-4 text-gray-600" />
+              </button>
+              <select className="bg-white border border-gray-200 px-3 py-2 rounded-lg font-avenir text-gray-700">
+                <option>Sort by Price</option>
+                <option>Sort by Duration</option>
+                <option>Sort by Rating</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Results Summary */}
+          <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
+            <p className="text-orange-800 font-avenir">
+              <span className="font-semibold">{searchResults.length} results found</span> for your search
+            </p>
           </div>
 
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-0">
               {searchResults.map((result) => {
                 if (result.type === 'flight') return renderFlightCard(result);
                 if (result.type === 'train') return renderTrainCard(result);

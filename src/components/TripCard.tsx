@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Check, Edit3, Sparkles } from 'lucide-react';
+import { Check, Edit3, Sparkles, Plane, Train, Building } from 'lucide-react';
 
 const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -13,58 +13,16 @@ const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
     onSelect(trip.id);
   };
 
-  const getTravelDetails = () => {
-    if (!searchParams) return {};
-    
-    switch (searchParams.travelType) {
-      case 'flights':
-        return trip.flightDetails;
-      case 'trains':
-        return trip.trainDetails;
-      case 'hotels':
-        return trip.hotelDetails;
-      default:
-        return trip.flightDetails;
-    }
+  const getSelectedTravelTypes = () => {
+    if (!searchParams?.travelTypes) return ['flights'];
+    return searchParams.travelTypes;
   };
 
-  const details = getTravelDetails();
+  const selectedTypes = getSelectedTravelTypes();
 
-  if (trip.id === 'other') {
-    return (
-      <div 
-        onClick={handleCardClick}
-        className="relative bg-gradient-to-br from-gray-50 to-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 cursor-pointer card-hover border border-gray-100"
-      >
-        {selected && (
-          <div className="absolute top-4 right-4 z-10 animate-scale-in">
-            <div className="bg-green-500 text-white rounded-full p-2 shadow-lg">
-              <Check className="w-5 h-5" />
-            </div>
-          </div>
-        )}
-        
-        <div className="h-48 bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-700 flex items-center justify-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-black/20"></div>
-          <div className="text-white text-center relative z-10">
-            <Sparkles className="w-12 h-12 mx-auto mb-4 animate-pulse" />
-            <div className="text-xl font-bold tracking-wide">OTHER</div>
-            <div className="text-sm font-light">Custom Destination</div>
-          </div>
-        </div>
-        
-        <div className="p-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-2 tracking-tight">Other Destinations</h3>
-          <p className="text-gray-600 mb-4 font-light">Book travel to any destination of your choice</p>
-          
-          <div className="text-right">
-            <p className="text-sm text-gray-500 font-light">Starting from</p>
-            <p className="text-2xl font-bold text-blue-600">Custom Quote</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const handleEditService = (serviceType) => {
+    onModify({ ...trip, editService: serviceType });
+  };
 
   return (
     <div 
@@ -93,38 +51,92 @@ const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
       </div>
       
       <div className="p-6">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <p className="text-lg font-semibold text-gray-800 tracking-tight">
-              {nights} Night{nights !== 1 ? 's' : ''} / {days} Day{days !== 1 ? 's' : ''}
-            </p>
-            <p className="text-sm text-gray-600 font-light">{trip.meals}</p>
-          </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onModify(trip);
-            }}
-            className="bg-gray-50 hover:bg-gray-100 p-3 rounded-xl transition-all duration-200 hover:scale-105 border border-gray-200"
-          >
-            <Edit3 className="w-4 h-4 text-gray-600" />
-          </button>
+        <div className="mb-4">
+          <p className="text-lg font-semibold text-gray-800 tracking-tight">
+            {nights} Night{nights !== 1 ? 's' : ''} / {days} Day{days !== 1 ? 's' : ''}
+          </p>
+          <p className="text-sm text-gray-600 font-light">{trip.meals}</p>
         </div>
 
-        <div className="space-y-3 mb-4">
-          {details && (
-            <>
-              <p className="text-sm text-gray-600">
-                <span className="font-medium text-gray-800">Service:</span> <span className="font-light">{details.airline || details.service || details.name}</span>
-              </p>
-              <p className="text-sm text-gray-600">
-                <span className="font-medium text-gray-800">Class:</span> <span className="font-light">{details.class || details.roomType}</span>
-              </p>
-              <p className="text-sm text-gray-600">
-                <span className="font-medium text-gray-800">{searchParams?.travelType === 'hotels' ? 'Room' : 'Seat'}:</span> <span className="font-light">{details.roomNumber || details.seatNumber}</span>
-              </p>
-            </>
+        {/* Travel Services */}
+        <div className="space-y-4 mb-4">
+          {selectedTypes.includes('flights') && trip.flightDetails && (
+            <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-2">
+                  <Plane className="w-4 h-4 text-blue-600" />
+                  <span className="font-medium text-blue-800">Flight</span>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditService('flights');
+                  }}
+                  className="text-blue-600 hover:text-blue-800 transition-colors"
+                >
+                  <Edit3 className="w-3 h-3" />
+                </button>
+              </div>
+              <div className="text-xs text-blue-700 space-y-1">
+                <p><span className="font-medium">Airline:</span> {trip.flightDetails.airline}</p>
+                <p><span className="font-medium">Class:</span> {trip.flightDetails.class}</p>
+                <p><span className="font-medium">Seat:</span> {trip.flightDetails.seatNumber}</p>
+              </div>
+            </div>
           )}
+
+          {selectedTypes.includes('trains') && trip.trainDetails && (
+            <div className="bg-green-50 p-4 rounded-xl border border-green-100">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-2">
+                  <Train className="w-4 h-4 text-green-600" />
+                  <span className="font-medium text-green-800">Train</span>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditService('trains');
+                  }}
+                  className="text-green-600 hover:text-green-800 transition-colors"
+                >
+                  <Edit3 className="w-3 h-3" />
+                </button>
+              </div>
+              <div className="text-xs text-green-700 space-y-1">
+                <p><span className="font-medium">Service:</span> {trip.trainDetails.service}</p>
+                <p><span className="font-medium">Class:</span> {trip.trainDetails.class}</p>
+                <p><span className="font-medium">Seat:</span> {trip.trainDetails.seatNumber}</p>
+              </div>
+            </div>
+          )}
+
+          {selectedTypes.includes('hotels') && trip.hotelDetails && (
+            <div className="bg-purple-50 p-4 rounded-xl border border-purple-100">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center space-x-2">
+                  <Building className="w-4 h-4 text-purple-600" />
+                  <span className="font-medium text-purple-800">Hotel</span>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditService('hotels');
+                  }}
+                  className="text-purple-600 hover:text-purple-800 transition-colors"
+                >
+                  <Edit3 className="w-3 h-3" />
+                </button>
+              </div>
+              <div className="text-xs text-purple-700 space-y-1">
+                <p><span className="font-medium">Hotel:</span> {trip.hotelDetails.name}</p>
+                <p><span className="font-medium">Room:</span> {trip.hotelDetails.roomType}</p>
+                <p><span className="font-medium">Number:</span> {trip.hotelDetails.roomNumber}</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-2 mb-4">
           <p className="text-sm text-gray-600">
             <span className="font-medium text-gray-800">Transfer:</span> <span className="font-light">{trip.pickupDrop}</span>
           </p>

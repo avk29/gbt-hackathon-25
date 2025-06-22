@@ -40,16 +40,6 @@ const HomePage = ({ onSearch, teamName }) => {
         <div className="animate-scale-in" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
           <SearchForm onSearch={onSearch} />
         </div>
-        
-        {/* Additional Info */}
-        <div className="mt-12 text-center animate-fade-in-up" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
-          <p className="text-white/70 text-sm font-avenir">
-            Book your next adventure today! Stop waiting for the right moment to explore the world.
-          </p>
-          <p className="text-white/70 text-sm mt-1 font-avenir">
-            Start your journey of getting unforgettable precious moments with us.
-          </p>
-        </div>
       </div>
     </div>
   );

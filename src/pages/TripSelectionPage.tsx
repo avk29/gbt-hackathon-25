@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Plane, Train, Building } from 'lucide-react';
 import Header from '../components/Header';
 import TripCard from '../components/TripCard';
+import CreateJourneyCard from '../components/CreateJourneyCard';
 import tripData from '../data/tripData.json';
 
 const TripSelectionPage = ({ searchParams, onBookTrip, onOtherDestination, teamName, onBack }) => {
@@ -9,16 +11,8 @@ const TripSelectionPage = ({ searchParams, onBookTrip, onOtherDestination, teamN
   const [trips, setTrips] = useState([]);
 
   useEffect(() => {
-    // Add the "Other" option to the trips
-    const tripsWithOther = [
-      ...tripData.preExistingTrips,
-      {
-        id: 'other',
-        cityName: 'Other',
-        type: 'custom'
-      }
-    ];
-    setTrips(tripsWithOther);
+    // Only load pre-existing trips, no "Other" option here
+    setTrips(tripData.preExistingTrips);
   }, []);
 
   const handleTripSelect = (tripId) => {
@@ -27,18 +21,19 @@ const TripSelectionPage = ({ searchParams, onBookTrip, onOtherDestination, teamN
 
   const handleModifyTrip = (trip) => {
     console.log('Modify trip:', trip);
-    // Here you would open a modal or navigate to an edit page
+    // Navigate to search results for editing
+    onOtherDestination({ ...searchParams, editTrip: trip });
   };
 
   const handleBookNow = () => {
     if (selectedTrip) {
       const trip = trips.find(t => t.id === selectedTrip);
-      if (trip.id === 'other') {
-        onOtherDestination(searchParams);
-      } else {
-        onBookTrip(trip, searchParams);
-      }
+      onBookTrip(trip, searchParams);
     }
+  };
+
+  const handleCreateJourney = (journeyParams) => {
+    onOtherDestination(journeyParams);
   };
 
   const handleBackClick = () => {
@@ -72,9 +67,9 @@ const TripSelectionPage = ({ searchParams, onBookTrip, onOtherDestination, teamN
               Select from pre-configured trips or customize your own
             </p>
             <div className="mt-6 text-sm text-gray-500">
-              {searchParams?.travelType && (
+              {searchParams?.travelTypes && (
                 <span className="capitalize bg-blue-50 text-blue-700 px-4 py-2 rounded-full font-medium border border-blue-200">
-                  {searchParams.travelType} • {searchParams.travelers} Traveler{searchParams.travelers !== 1 ? 's' : ''}
+                  {searchParams.travelTypes.join(', ')} • {searchParams.travelers} Traveler{searchParams.travelers !== 1 ? 's' : ''}
                 </span>
               )}
             </div>
@@ -99,6 +94,23 @@ const TripSelectionPage = ({ searchParams, onBookTrip, onOtherDestination, teamN
                 />
               </div>
             ))}
+          </div>
+
+          {/* Separator */}
+          <div className="flex items-center justify-center mb-8">
+            <div className="flex-1 h-px bg-gray-200"></div>
+            <div className="px-6">
+              <h2 className="text-2xl font-bold text-gray-800 tracking-tight">Create Your Journey</h2>
+            </div>
+            <div className="flex-1 h-px bg-gray-200"></div>
+          </div>
+
+          {/* Create Journey Card */}
+          <div className="animate-scale-in" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
+            <CreateJourneyCard 
+              searchParams={searchParams}
+              onCreateJourney={handleCreateJourney}
+            />
           </div>
 
           {/* Book Now Button */}

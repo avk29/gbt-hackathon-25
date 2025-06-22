@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import HomePage from './HomePage';
 import TripSelectionPage from './TripSelectionPage';
@@ -30,7 +29,7 @@ const Index = () => {
   const handleOtherDestination = (params) => {
     setSearchParams(params);
     setPreviousPage('trips');
-    setCurrentPage('destination-search');
+    setCurrentPage('search-results');
   };
 
   const handleDestinationSearch = (params) => {
@@ -50,7 +49,7 @@ const Index = () => {
       duration: { nights: 3, days: 4 },
       meals: 'Breakfast included',
       pickupDrop: 'Airport transfer included',
-      flightDetails: searchParams?.travelType === 'flights' ? {
+      flightDetails: searchParams?.travelTypes?.includes('flights') ? {
         airline: result.airline,
         flightNumber: result.flightNumber,
         class: result.class,
@@ -59,7 +58,7 @@ const Index = () => {
         arrival: result.arrival,
         luggageAllowance: result.luggageAllowance
       } : null,
-      trainDetails: searchParams?.travelType === 'trains' ? {
+      trainDetails: searchParams?.travelTypes?.includes('trains') ? {
         service: result.service,
         trainNumber: result.trainNumber,
         class: result.class,
@@ -67,7 +66,7 @@ const Index = () => {
         departure: result.departure,
         arrival: result.arrival
       } : null,
-      hotelDetails: searchParams?.travelType === 'hotels' ? {
+      hotelDetails: searchParams?.travelTypes?.includes('hotels') ? {
         name: result.name,
         roomType: result.roomType,
         roomNumber: result.roomNumber,
@@ -130,21 +129,12 @@ const Index = () => {
             onBack={handleBackToHome}
           />
         );
-      case 'destination-search':
-        return (
-          <DestinationSearchPage
-            searchParams={searchParams}
-            teamName={teamName}
-            onBack={handleBackToTrips}
-            onSearch={handleDestinationSearch}
-          />
-        );
       case 'search-results':
         return (
           <SearchResultsPage
             searchParams={searchParams}
             teamName={teamName}
-            onBack={handleBackToDestinationSearch}
+            onBack={handleBackToTrips}
             onSelect={handleSelectResult}
           />
         );

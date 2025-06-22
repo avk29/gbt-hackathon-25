@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Filter, Plane, Train, Building, Clock, MapPin, Star, Wifi, Coffee, Users, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Filter, Plane, Train, Building, Clock, MapPin, Star, Wifi, Coffee, Users, ChevronDown, CheckCircle } from 'lucide-react';
 import Header from '../components/Header';
 
 const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
@@ -12,6 +12,9 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
   
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Check if we're editing a specific service
+  const editingService = searchParams?.editTrip?.editService;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -27,7 +30,10 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
     const results = [];
     const selectedTypes = searchParams?.travelTypes || ['flights'];
 
-    if (selectedTypes.includes('flights')) {
+    // If editing a specific service, only show that type
+    const typesToShow = editingService ? [editingService] : selectedTypes;
+
+    if (typesToShow.includes('flights')) {
       results.push(
         {
           id: 'flight-1',
@@ -43,7 +49,8 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
           stops: 'Non-stop',
           aircraft: 'A320',
           luggageAllowance: '15kg',
-          amenities: ['WiFi', 'Meals']
+          amenities: ['WiFi', 'Meals'],
+          rating: 4.2
         },
         {
           id: 'flight-2',
@@ -59,12 +66,13 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
           stops: 'Non-stop',
           aircraft: 'B787',
           luggageAllowance: '30kg',
-          amenities: ['WiFi', 'Premium Meals', 'Lounge Access']
+          amenities: ['WiFi', 'Premium Meals', 'Lounge Access'],
+          rating: 4.8
         }
       );
     }
 
-    if (selectedTypes.includes('trains')) {
+    if (typesToShow.includes('trains')) {
       results.push(
         {
           id: 'train-1',
@@ -78,12 +86,28 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
           class: '3A',
           route: 'NDLS → CSMT',
           seatNumber: 'B1-23',
-          amenities: ['AC', 'Meals', 'Bedding']
+          amenities: ['AC', 'Meals', 'Bedding'],
+          rating: 4.5
+        },
+        {
+          id: 'train-2',
+          type: 'train',
+          service: 'Shatabdi Express',
+          trainNumber: '12001',
+          departure: '06:00',
+          arrival: '14:25',
+          duration: '8h 25m',
+          price: 2200,
+          class: 'CC',
+          route: 'NDLS → CSMT',
+          seatNumber: 'C2-15',
+          amenities: ['AC', 'Breakfast', 'Lunch'],
+          rating: 4.3
         }
       );
     }
 
-    if (selectedTypes.includes('hotels')) {
+    if (typesToShow.includes('hotels')) {
       results.push(
         {
           id: 'hotel-1',
@@ -96,6 +120,18 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
           checkIn: '15:00',
           checkOut: '11:00',
           amenities: ['WiFi', 'Spa', 'Pool', 'Gym', 'Restaurant']
+        },
+        {
+          id: 'hotel-2',
+          type: 'hotel',
+          name: 'ITC Grand Central',
+          rating: 5,
+          price: 18000,
+          location: 'Parel, Mumbai',
+          roomType: 'Executive Suite',
+          checkIn: '14:00',
+          checkOut: '12:00',
+          amenities: ['WiFi', 'Business Center', 'Pool', 'Spa']
         }
       );
     }
@@ -108,49 +144,57 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
   };
 
   const renderFlightCard = (result) => (
-    <div key={result.id} className="bg-white rounded-lg border border-gray-200 p-6 mb-4 hover:shadow-lg transition-shadow duration-200">
-      <div className="flex items-center justify-between mb-4">
+    <div key={result.id} className="bg-white rounded-2xl border border-gray-100 p-6 mb-6 hover:shadow-xl transition-all duration-300">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-            <Plane className="w-6 h-6 text-orange-600" />
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <Plane className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 font-avenir">{result.airline}</h3>
-            <p className="text-sm text-gray-500 font-avenir">{result.flightNumber}</p>
+            <h3 className="text-xl font-bold text-gray-900 font-avenir">{result.airline}</h3>
+            <p className="text-gray-500 font-avenir">{result.flightNumber}</p>
+            <div className="flex items-center space-x-1 mt-1">
+              {[...Array(Math.floor(result.rating))].map((_, i) => (
+                <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              ))}
+              <span className="text-sm text-gray-500 ml-1">{result.rating}</span>
+            </div>
           </div>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-bold text-orange-600 font-avenir">₹{result.price.toLocaleString()}</div>
-          <div className="text-sm text-gray-500 font-avenir">{result.class}</div>
+          <div className="text-3xl font-bold text-blue-600 font-avenir">₹{result.price.toLocaleString()}</div>
+          <div className="text-gray-500 font-avenir">{result.class}</div>
         </div>
       </div>
       
-      <div className="grid grid-cols-3 gap-4 mb-4 py-4 bg-gray-50 rounded-lg">
-        <div className="text-center">
-          <div className="text-xl font-bold text-gray-900 font-avenir">{result.departure}</div>
-          <div className="text-sm text-gray-500 font-avenir">DEL</div>
-        </div>
-        <div className="text-center">
-          <div className="text-sm text-gray-500 font-avenir">{result.duration}</div>
-          <div className="flex items-center justify-center my-1">
-            <div className="h-px bg-orange-300 flex-1"></div>
-            <div className="mx-2 w-2 h-2 bg-orange-400 rounded-full"></div>
-            <div className="h-px bg-orange-300 flex-1"></div>
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 mb-6">
+        <div className="grid grid-cols-3 gap-4">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-gray-900 font-avenir">{result.departure}</div>
+            <div className="text-gray-500 font-avenir">DEL</div>
           </div>
-          <div className="text-sm text-gray-500 font-avenir">{result.stops}</div>
-        </div>
-        <div className="text-center">
-          <div className="text-xl font-bold text-gray-900 font-avenir">{result.arrival}</div>
-          <div className="text-sm text-gray-500 font-avenir">BOM</div>
+          <div className="text-center">
+            <div className="text-gray-500 font-avenir">{result.duration}</div>
+            <div className="flex items-center justify-center my-2">
+              <div className="h-0.5 bg-blue-300 flex-1"></div>
+              <div className="mx-3 w-3 h-3 bg-blue-500 rounded-full"></div>
+              <div className="h-0.5 bg-blue-300 flex-1"></div>
+            </div>
+            <div className="text-gray-500 font-avenir">{result.stops}</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-gray-900 font-avenir">{result.arrival}</div>
+            <div className="text-gray-500 font-avenir">BOM</div>
+          </div>
         </div>
       </div>
 
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4 text-sm text-gray-600">
+        <div className="flex items-center space-x-6 text-sm text-gray-600">
           <span className="font-avenir">Baggage: {result.luggageAllowance}</span>
-          <div className="flex items-center space-x-1">
-            {result.amenities.map((amenity, index) => (
-              <span key={index} className="bg-gray-100 px-2 py-1 rounded text-xs font-avenir">
+          <div className="flex items-center space-x-2">
+            {result.amenities.slice(0, 3).map((amenity, index) => (
+              <span key={index} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-avenir">
                 {amenity}
               </span>
             ))}
@@ -158,58 +202,67 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
         </div>
         <button
           onClick={() => handleSelectResult(result)}
-          className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg font-medium transition-colors font-avenir"
+          className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300 font-avenir flex items-center space-x-2"
         >
-          Select Flight
+          <CheckCircle className="w-5 h-5" />
+          <span>Select Flight</span>
         </button>
       </div>
     </div>
   );
 
   const renderTrainCard = (result) => (
-    <div key={result.id} className="bg-white rounded-lg border border-gray-200 p-6 mb-4 hover:shadow-lg transition-shadow duration-200">
-      <div className="flex items-center justify-between mb-4">
+    <div key={result.id} className="bg-white rounded-2xl border border-gray-100 p-6 mb-6 hover:shadow-xl transition-all duration-300">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-            <Train className="w-6 h-6 text-green-600" />
+          <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <Train className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 font-avenir">{result.service}</h3>
-            <p className="text-sm text-gray-500 font-avenir">{result.trainNumber}</p>
+            <h3 className="text-xl font-bold text-gray-900 font-avenir">{result.service}</h3>
+            <p className="text-gray-500 font-avenir">{result.trainNumber}</p>
+            <div className="flex items-center space-x-1 mt-1">
+              {[...Array(Math.floor(result.rating))].map((_, i) => (
+                <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              ))}
+              <span className="text-sm text-gray-500 ml-1">{result.rating}</span>
+            </div>
           </div>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-bold text-green-600 font-avenir">₹{result.price.toLocaleString()}</div>
-          <div className="text-sm text-gray-500 font-avenir">{result.class}</div>
+          <div className="text-3xl font-bold text-green-600 font-avenir">₹{result.price.toLocaleString()}</div>
+          <div className="text-gray-500 font-avenir">{result.class}</div>
         </div>
       </div>
       
-      <div className="grid grid-cols-3 gap-4 mb-4 py-4 bg-gray-50 rounded-lg">
-        <div className="text-center">
-          <div className="text-xl font-bold text-gray-900 font-avenir">{result.departure}</div>
-          <div className="text-sm text-gray-500 font-avenir">NDLS</div>
-        </div>
-        <div className="text-center">
-          <div className="text-sm text-gray-500 font-avenir">{result.duration}</div>
-          <div className="flex items-center justify-center my-1">
-            <div className="h-px bg-green-300 flex-1"></div>
-            <div className="mx-2 w-2 h-2 bg-green-400 rounded-full"></div>
-            <div className="h-px bg-green-300 flex-1"></div>
+      <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 mb-6">
+        <div className="grid grid-cols-3 gap-4">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-gray-900 font-avenir">{result.departure}</div>
+            <div className="text-gray-500 font-avenir">NDLS</div>
           </div>
-          <div className="text-sm text-gray-500 font-avenir">Direct</div>
-        </div>
-        <div className="text-center">
-          <div className="text-xl font-bold text-gray-900 font-avenir">{result.arrival}</div>
-          <div className="text-sm text-gray-500 font-avenir">CSMT</div>
+          <div className="text-center">
+            <div className="text-gray-500 font-avenir">{result.duration}</div>
+            <div className="flex items-center justify-center my-2">
+              <div className="h-0.5 bg-green-300 flex-1"></div>
+              <div className="mx-3 w-3 h-3 bg-green-500 rounded-full"></div>
+              <div className="h-0.5 bg-green-300 flex-1"></div>
+            </div>
+            <div className="text-gray-500 font-avenir">Direct</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-gray-900 font-avenir">{result.arrival}</div>
+            <div className="text-gray-500 font-avenir">CSMT</div>
+          </div>
         </div>
       </div>
 
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4 text-sm text-gray-600">
+        <div className="flex items-center space-x-6 text-sm text-gray-600">
           <span className="font-avenir">Seat: {result.seatNumber}</span>
-          <div className="flex items-center space-x-1">
-            {result.amenities.map((amenity, index) => (
-              <span key={index} className="bg-gray-100 px-2 py-1 rounded text-xs font-avenir">
+          <div className="flex items-center space-x-2">
+            {result.amenities.slice(0, 3).map((amenity, index) => (
+              <span key={index} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-avenir">
                 {amenity}
               </span>
             ))}
@@ -217,65 +270,76 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
         </div>
         <button
           onClick={() => handleSelectResult(result)}
-          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors font-avenir"
+          className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300 font-avenir flex items-center space-x-2"
         >
-          Select Train
+          <CheckCircle className="w-5 h-5" />
+          <span>Select Train</span>
         </button>
       </div>
     </div>
   );
 
   const renderHotelCard = (result) => (
-    <div key={result.id} className="bg-white rounded-lg border border-gray-200 p-6 mb-4 hover:shadow-lg transition-shadow duration-200">
-      <div className="flex items-center justify-between mb-4">
+    <div key={result.id} className="bg-white rounded-2xl border border-gray-100 p-6 mb-6 hover:shadow-xl transition-all duration-300">
+      <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-            <Building className="w-6 h-6 text-purple-600" />
+          <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <Building className="w-8 h-8 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 font-avenir">{result.name}</h3>
-            <div className="flex items-center space-x-1">
+            <h3 className="text-xl font-bold text-gray-900 font-avenir">{result.name}</h3>
+            <div className="flex items-center space-x-1 mt-1">
               {[...Array(result.rating)].map((_, i) => (
                 <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
               ))}
             </div>
+            <div className="flex items-center space-x-2 mt-1">
+              <MapPin className="w-4 h-4 text-gray-500" />
+              <span className="text-gray-500 font-avenir">{result.location}</span>
+            </div>
           </div>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-bold text-purple-600 font-avenir">₹{result.price.toLocaleString()}</div>
-          <div className="text-sm text-gray-500 font-avenir">per night</div>
+          <div className="text-3xl font-bold text-purple-600 font-avenir">₹{result.price.toLocaleString()}</div>
+          <div className="text-gray-500 font-avenir">per night</div>
         </div>
       </div>
       
-      <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-        <div className="flex items-center space-x-2 mb-2">
-          <MapPin className="w-4 h-4 text-gray-500" />
-          <span className="text-sm text-gray-600 font-avenir">{result.location}</span>
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 mb-6">
+        <div className="text-lg font-semibold text-gray-800 font-avenir mb-2">{result.roomType}</div>
+        <div className="flex items-center space-x-4 text-sm text-gray-600">
+          <div className="flex items-center space-x-1">
+            <Clock className="w-4 h-4" />
+            <span className="font-avenir">Check-in: {result.checkIn}</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <Clock className="w-4 h-4" />
+            <span className="font-avenir">Check-out: {result.checkOut}</span>
+          </div>
         </div>
-        <div className="text-sm font-medium text-gray-700 font-avenir">{result.roomType}</div>
-        <div className="text-xs text-gray-500 font-avenir">Check-in: {result.checkIn} • Check-out: {result.checkOut}</div>
       </div>
 
       <div className="flex items-center justify-between">
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-2">
           {result.amenities.slice(0, 4).map((amenity, index) => (
-            <span key={index} className="bg-gray-100 px-2 py-1 rounded text-xs text-gray-600 font-avenir">
+            <span key={index} className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-avenir">
               {amenity}
             </span>
           ))}
         </div>
         <button
           onClick={() => handleSelectResult(result)}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-medium transition-colors font-avenir"
+          className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300 font-avenir flex items-center space-x-2"
         >
-          Select Hotel
+          <CheckCircle className="w-5 h-5" />
+          <span>Select Hotel</span>
         </button>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 font-avenir">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
       <Header teamName={teamName} />
       
       <div className="pt-24 px-6 pb-20">
@@ -291,16 +355,18 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
                 <span className="font-medium font-avenir">Back</span>
               </button>
               <div className="h-6 w-px bg-gray-300"></div>
-              <h1 className="text-2xl font-bold text-gray-900 font-avenir">Search Results</h1>
+              <h1 className="text-3xl font-bold text-gray-900 font-avenir">
+                {editingService ? `Edit ${editingService.charAt(0).toUpperCase() + editingService.slice(1)}` : 'Search Results'}
+              </h1>
             </div>
             
             <div className="flex items-center space-x-4">
-              <button className="flex items-center space-x-2 bg-white border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+              <button className="flex items-center space-x-2 bg-white border border-gray-200 px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
                 <Filter className="w-4 h-4 text-gray-600" />
                 <span className="font-medium font-avenir text-gray-700">Filters</span>
                 <ChevronDown className="w-4 h-4 text-gray-600" />
               </button>
-              <select className="bg-white border border-gray-200 px-3 py-2 rounded-lg font-avenir text-gray-700">
+              <select className="bg-white border border-gray-200 px-3 py-2 rounded-xl font-avenir text-gray-700 shadow-sm">
                 <option>Sort by Price</option>
                 <option>Sort by Duration</option>
                 <option>Sort by Rating</option>
@@ -309,15 +375,16 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
           </div>
 
           {/* Results Summary */}
-          <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
-            <p className="text-orange-800 font-avenir">
-              <span className="font-semibold">{searchResults.length} results found</span> for your search
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 mb-8">
+            <p className="text-blue-800 font-avenir text-lg">
+              <span className="font-semibold">{searchResults.length} results found</span> 
+              {editingService && <span> for {editingService}</span>}
             </p>
           </div>
 
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
           ) : (
             <div className="space-y-0">

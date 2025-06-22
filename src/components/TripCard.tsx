@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Check, Edit3, Sparkles, Plane, Train, Building } from 'lucide-react';
+import { Check, Edit3, Sparkles, Plane, Train, Building, Clock } from 'lucide-react';
 
 const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -80,6 +80,7 @@ const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
               <div className="text-xs text-blue-700 space-y-1 font-avenir">
                 <p><span className="font-medium">Airline:</span> {trip.flightDetails.airline}</p>
                 <p><span className="font-medium">Class:</span> {trip.flightDetails.class}</p>
+                <p><span className="font-medium">Time:</span> {trip.flightDetails.departure} - {trip.flightDetails.arrival}</p>
                 <p><span className="font-medium">Seat:</span> {trip.flightDetails.seatNumber}</p>
               </div>
             </div>
@@ -105,6 +106,7 @@ const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
               <div className="text-xs text-green-700 space-y-1 font-avenir">
                 <p><span className="font-medium">Service:</span> {trip.trainDetails.service}</p>
                 <p><span className="font-medium">Class:</span> {trip.trainDetails.class}</p>
+                <p><span className="font-medium">Time:</span> {trip.trainDetails.departure} - {trip.trainDetails.arrival}</p>
                 <p><span className="font-medium">Seat:</span> {trip.trainDetails.seatNumber}</p>
               </div>
             </div>
@@ -130,6 +132,7 @@ const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
               <div className="text-xs text-purple-700 space-y-1 font-avenir">
                 <p><span className="font-medium">Hotel:</span> {trip.hotelDetails.name}</p>
                 <p><span className="font-medium">Room:</span> {trip.hotelDetails.roomType}</p>
+                <p><span className="font-medium">Check-in:</span> {trip.hotelDetails.checkIn}</p>
                 <p><span className="font-medium">Number:</span> {trip.hotelDetails.roomNumber}</p>
               </div>
             </div>

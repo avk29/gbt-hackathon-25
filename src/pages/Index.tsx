@@ -39,7 +39,45 @@ const Index = () => {
   };
 
   const handleSelectResult = (result, params) => {
-    // Convert result to trip format for confirmation page
+    if (params?.editTrip?.editService) {
+      const updatedTrip = { ...params.editTrip };
+      
+      if (params.editTrip.editService === 'flights') {
+        updatedTrip.flightDetails = {
+          ...updatedTrip.flightDetails,
+          airline: result.airline,
+          flightNumber: result.flightNumber,
+          class: result.class,
+          departure: result.departure,
+          arrival: result.arrival,
+          luggageAllowance: result.luggageAllowance
+        };
+      } else if (params.editTrip.editService === 'trains') {
+        updatedTrip.trainDetails = {
+          ...updatedTrip.trainDetails,
+          service: result.service,
+          trainNumber: result.trainNumber,
+          class: result.class,
+          departure: result.departure,
+          arrival: result.arrival
+        };
+      } else if (params.editTrip.editService === 'hotels') {
+        updatedTrip.hotelDetails = {
+          ...updatedTrip.hotelDetails,
+          name: result.name,
+          roomType: result.roomType,
+          checkIn: result.checkIn,
+          checkOut: result.checkOut
+        };
+      }
+      
+      delete updatedTrip.editService;
+      setSelectedTrip(updatedTrip);
+      setSearchParams({ ...params, editTrip: updatedTrip });
+      setCurrentPage('trips');
+      return;
+    }
+
     const trip = {
       id: result.id,
       cityName: params.toDestination,

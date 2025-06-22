@@ -30,15 +30,15 @@ const CreateJourneyCard = ({ searchParams, onCreateJourney }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-100 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-500">
+    <div className="bg-gradient-to-br from-slate-50 to-gray-100 border border-gray-200 rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-500 max-w-4xl mx-auto">
       <div className="text-center mb-6">
-        <h3 className="text-2xl font-bold text-gray-800 mb-2 tracking-tight">Custom Destination</h3>
-        <p className="text-gray-600 font-light">Plan your journey to any destination</p>
+        <h3 className="text-xl font-bold text-gray-800 mb-2 tracking-tight font-avenir">Custom Destination</h3>
+        <p className="text-gray-600 font-light font-avenir">Plan your journey to any destination</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+      <div className="grid grid-cols-1 md:grid-cols-10 gap-4 items-end">
         {/* Travel Types */}
-        <div className="md:col-span-3">
+        <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-3 font-avenir">Travel Type</label>
           <div className="space-y-2">
             <div className="flex items-center space-x-2">
@@ -50,7 +50,7 @@ const CreateJourneyCard = ({ searchParams, onCreateJourney }) => {
               />
               <div className="flex items-center space-x-1">
                 <Plane className="w-4 h-4 text-blue-600" />
-                <label htmlFor="create-flights" className="text-sm font-medium text-gray-700 cursor-pointer">
+                <label htmlFor="create-flights" className="text-sm font-medium text-gray-700 cursor-pointer font-avenir">
                   Flights
                 </label>
               </div>
@@ -64,7 +64,7 @@ const CreateJourneyCard = ({ searchParams, onCreateJourney }) => {
               />
               <div className="flex items-center space-x-1">
                 <Train className="w-4 h-4 text-green-600" />
-                <label htmlFor="create-trains" className="text-sm font-medium text-gray-700 cursor-pointer">
+                <label htmlFor="create-trains" className="text-sm font-medium text-gray-700 cursor-pointer font-avenir">
                   Trains
                 </label>
               </div>
@@ -78,7 +78,7 @@ const CreateJourneyCard = ({ searchParams, onCreateJourney }) => {
               />
               <div className="flex items-center space-x-1">
                 <Building className="w-4 h-4 text-purple-600" />
-                <label htmlFor="create-hotels" className="text-sm font-medium text-gray-700 cursor-pointer">
+                <label htmlFor="create-hotels" className="text-sm font-medium text-gray-700 cursor-pointer font-avenir">
                   Hotels
                 </label>
               </div>
@@ -87,36 +87,37 @@ const CreateJourneyCard = ({ searchParams, onCreateJourney }) => {
         </div>
 
         {/* From Destination */}
-        <div className="md:col-span-4">
+        <div className="md:col-span-3">
           <label className="block text-sm font-medium text-gray-700 mb-3 font-avenir">From</label>
           <input
             type="text"
             value={fromDestination}
             onChange={(e) => setFromDestination(e.target.value)}
             placeholder="Origin city"
-            className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white font-avenir text-gray-800 shadow-sm"
+            className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white backdrop-blur-sm transition-all duration-300 hover:bg-white font-avenir text-gray-800 shadow-sm"
           />
         </div>
 
         {/* To Destination */}
-        <div className="md:col-span-4">
+        <div className="md:col-span-3">
           <label className="block text-sm font-medium text-gray-700 mb-3 font-avenir">To</label>
           <input
             type="text"
             value={toDestination}
             onChange={(e) => setToDestination(e.target.value)}
             placeholder="Destination city"
-            className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white font-avenir text-gray-800 shadow-sm"
+            className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white backdrop-blur-sm transition-all duration-300 hover:bg-white font-avenir text-gray-800 shadow-sm"
           />
         </div>
 
         {/* Search Button */}
-        <div className="md:col-span-1">
+        <div className="md:col-span-2">
           <button
             onClick={handleSearch}
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white p-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 font-avenir"
+            className="w-full bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white p-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 font-avenir"
           >
-            <Search className="w-5 h-5" />
+            <Search className="w-4 h-4 mr-2" />
+            <span>Search</span>
           </button>
         </div>
       </div>

@@ -1,355 +1,328 @@
 
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Star, Clock, MapPin, Wifi, Coffee, Car, Plane, Train, Building, Check } from 'lucide-react';
+import { ArrowLeft, Filter, Plane, Train, Building, Clock, MapPin, Star, Wifi, Coffee, Users } from 'lucide-react';
 import Header from '../components/Header';
 
 const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
-  const [results, setResults] = useState([]);
-  const [selectedResult, setSelectedResult] = useState(null);
-  const [sortBy, setSortBy] = useState('price');
+  const [selectedFilters, setSelectedFilters] = useState({
+    priceRange: [0, 5000],
+    airlines: [],
+    departure: 'any',
+    class: 'any'
+  });
+  
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock results based on travel type
-    const mockResults = generateMockResults(searchParams?.travelType);
-    setResults(mockResults);
+    // Simulate loading and generate mock results
+    const timer = setTimeout(() => {
+      const mockResults = generateMockResults();
+      setSearchResults(mockResults);
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, [searchParams]);
 
-  const generateMockResults = (travelType) => {
-    const baseResults = {
-      flights: [
+  const generateMockResults = () => {
+    const results = [];
+    const selectedTypes = searchParams?.travelTypes || ['flights'];
+
+    if (selectedTypes.includes('flights')) {
+      results.push(
         {
-          id: 'f1',
-          airline: 'Emirates',
-          flightNumber: 'EK 205',
-          departure: '14:30',
-          arrival: '22:45',
-          duration: '8h 15m',
-          price: 85000,
-          class: 'Business',
+          id: 'flight-1',
+          type: 'flight',
+          airline: 'IndiGo',
+          flightNumber: '6E 2134',
+          departure: '06:30',
+          arrival: '08:45',
+          duration: '2h 15m',
+          price: 8500,
+          class: 'Economy',
+          route: 'DEL → BOM',
           stops: 'Non-stop',
-          aircraft: 'Boeing 777-300ER',
-          amenities: ['Lie-flat seats', 'Premium dining', 'Wi-Fi', 'Entertainment'],
-          rating: 4.8,
-          luggageAllowance: '2 x 32kg'
+          aircraft: 'A320',
+          luggageAllowance: '15kg',
+          amenities: ['WiFi', 'Meals']
         },
         {
-          id: 'f2',
-          airline: 'Singapore Airlines',
-          flightNumber: 'SQ 317',
-          departure: '09:15',
-          arrival: '17:30',
-          duration: '8h 15m',
-          price: 78000,
+          id: 'flight-2',
+          type: 'flight',
+          airline: 'Air India',
+          flightNumber: 'AI 131',
+          departure: '14:20',
+          arrival: '16:50',
+          duration: '2h 30m',
+          price: 12500,
           class: 'Business',
+          route: 'DEL → BOM',
           stops: 'Non-stop',
-          aircraft: 'Airbus A350-900',
-          amenities: ['Suite seats', 'Fine dining', 'Wi-Fi', 'Lounge access'],
-          rating: 4.9,
-          luggageAllowance: '2 x 32kg'
-        },
-        {
-          id: 'f3',
-          airline: 'Lufthansa',
-          flightNumber: 'LH 756',
-          departure: '23:50',
-          arrival: '08:15+1',
-          duration: '8h 25m',
-          price: 72000,
-          class: 'Business',
-          stops: 'Non-stop',
-          aircraft: 'Airbus A340-600',
-          amenities: ['Flat beds', 'Gourmet meals', 'Wi-Fi', 'Priority boarding'],
-          rating: 4.6,
-          luggageAllowance: '2 x 32kg'
+          aircraft: 'B787',
+          luggageAllowance: '30kg',
+          amenities: ['WiFi', 'Premium Meals', 'Lounge Access']
         }
-      ],
-      trains: [
+      );
+    }
+
+    if (selectedTypes.includes('trains')) {
+      results.push(
         {
-          id: 't1',
-          service: 'Shatabdi Express',
-          trainNumber: '12002',
-          departure: '06:00',
-          arrival: '14:30',
-          duration: '8h 30m',
-          price: 3500,
-          class: 'Executive Chair Car',
-          route: 'Direct',
-          amenities: ['AC', 'Meals', 'Wi-Fi', 'Power outlets'],
-          rating: 4.5,
-          coach: 'E1',
-          seatNumber: '15A'
-        },
-        {
-          id: 't2',
+          id: 'train-1',
+          type: 'train',
           service: 'Rajdhani Express',
           trainNumber: '12951',
-          departure: '16:35',
-          arrival: '09:55+1',
-          duration: '17h 20m',
-          price: 4200,
-          class: '1st AC',
-          route: 'Direct',
-          amenities: ['Sleeper berths', 'All meals', 'Bedding', 'Attendant service'],
-          rating: 4.7,
-          coach: 'H1',
-          seatNumber: '12'
-        },
-        {
-          id: 't3',
-          service: 'Gatimaan Express',
-          trainNumber: '12049',
-          departure: '08:10',
-          arrival: '12:25',
-          duration: '4h 15m',
-          price: 2800,
-          class: 'Chair Car',
-          route: 'Direct',
-          amenities: ['AC', 'Snacks', 'Wi-Fi', 'Comfortable seating'],
-          rating: 4.3,
-          coach: 'C2',
-          seatNumber: '8B'
+          departure: '16:55',
+          arrival: '08:35',
+          duration: '15h 40m',
+          price: 3500,
+          class: '3A',
+          route: 'NDLS → CSMT',
+          seatNumber: 'B1-23',
+          amenities: ['AC', 'Meals', 'Bedding']
         }
-      ],
-      hotels: [
+      );
+    }
+
+    if (selectedTypes.includes('hotels')) {
+      results.push(
         {
-          id: 'h1',
-          name: 'The Oberoi',
-          category: '5-Star Luxury',
-          checkIn: '15:00',
-          checkOut: '12:00',
-          roomType: 'Deluxe Suite',
+          id: 'hotel-1',
+          type: 'hotel',
+          name: 'The Taj Mahal Palace',
+          rating: 5,
           price: 25000,
-          rating: 4.9,
-          amenities: ['Spa', 'Fine dining', 'Pool', 'Concierge', 'Butler service'],
-          location: 'City Center',
-          roomNumber: '1205',
-          view: 'City View'
-        },
-        {
-          id: 'h2',
-          name: 'Taj Palace',
-          category: '5-Star',
-          checkIn: '14:00',
-          checkOut: '11:00',
-          roomType: 'Executive Room',
-          price: 18000,
-          rating: 4.7,
-          amenities: ['Multiple restaurants', 'Spa', 'Fitness center', 'Business center'],
-          location: 'Business District',
-          roomNumber: '806',
-          view: 'Garden View'
-        },
-        {
-          id: 'h3',
-          name: 'ITC Grand Central',
-          category: '5-Star',
+          location: 'Colaba, Mumbai',
+          roomType: 'Deluxe Room',
           checkIn: '15:00',
+          checkOut: '11:00',
+          amenities: ['WiFi', 'Spa', 'Pool', 'Gym', 'Restaurant']
+        },
+        {
+          id: 'hotel-2',
+          type: 'hotel',
+          name: 'The Oberoi Mumbai',
+          rating: 5,
+          price: 22000,
+          location: 'Nariman Point, Mumbai',
+          roomType: 'Premier Room',
+          checkIn: '14:00',
           checkOut: '12:00',
-          roomType: 'Premium Room',
-          price: 15000,
-          rating: 4.6,
-          amenities: ['Restaurant', 'Bar', 'Gym', 'Wi-Fi', 'Room service'],
-          location: 'Airport vicinity',
-          roomNumber: '432',
-          view: 'Airport View'
+          amenities: ['WiFi', 'Spa', 'Pool', 'Business Center']
         }
-      ]
-    };
-
-    return baseResults[travelType] || [];
-  };
-
-  const handleResultSelect = (result) => {
-    setSelectedResult(result.id);
-  };
-
-  const handleBookNow = () => {
-    if (selectedResult) {
-      const result = results.find(r => r.id === selectedResult);
-      onSelect(result, searchParams);
+      );
     }
+
+    return results;
   };
 
-  const handleBackClick = () => {
-    if (onBack) {
-      onBack();
-    }
+  const handleSelectResult = (result) => {
+    onSelect(result, searchParams);
   };
 
-  const getIcon = () => {
-    switch (searchParams?.travelType) {
-      case 'flights': return Plane;
-      case 'trains': return Train;
-      case 'hotels': return Building;
-      default: return Plane;
-    }
-  };
-
-  const IconComponent = getIcon();
-
-  const renderResultCard = (result, index) => {
-    const isSelected = selectedResult === result.id;
-    
-    return (
-      <div
-        key={result.id}
-        onClick={() => handleResultSelect(result)}
-        className={`bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer border-2 animate-scale-in ${
-          isSelected ? 'border-blue-600 bg-blue-50' : 'border-gray-100 hover:border-gray-200'
-        }`}
-        style={{ 
-          animationDelay: `${index * 0.1}s`, 
-          animationFillMode: 'both' 
-        }}
-      >
-        {isSelected && (
-          <div className="absolute top-4 right-4 z-10 animate-scale-in">
-            <div className="bg-green-500 text-white rounded-full p-2 shadow-lg">
-              <Check className="w-5 h-5" />
-            </div>
+  const renderFlightCard = (result) => (
+    <div key={result.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+            <Plane className="w-6 h-6 text-blue-600" />
           </div>
-        )}
-
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center">
-              <IconComponent className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-gray-800 tracking-tight">
-                {result.airline || result.service || result.name}
-              </h3>
-              <p className="text-gray-600 font-light">
-                {result.flightNumber || result.trainNumber || result.category}
-              </p>
-            </div>
+          <div>
+            <h3 className="font-bold text-gray-900 font-avenir">{result.airline}</h3>
+            <p className="text-sm text-gray-500 font-avenir">{result.flightNumber} • {result.aircraft}</p>
           </div>
+        </div>
+        <div className="text-right">
+          <p className="text-2xl font-bold text-gray-900 font-avenir">₹{result.price.toLocaleString()}</p>
+          <p className="text-sm text-gray-500 font-avenir">{result.class}</p>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="text-center">
+          <p className="text-xl font-bold text-gray-900 font-avenir">{result.departure}</p>
+          <p className="text-sm text-gray-500 font-avenir">Departure</p>
+        </div>
+        <div className="text-center">
+          <p className="text-sm text-gray-500 font-avenir">{result.duration}</p>
+          <div className="flex items-center justify-center my-1">
+            <div className="h-px bg-gray-300 flex-1"></div>
+            <div className="mx-2 w-2 h-2 bg-gray-400 rounded-full"></div>
+            <div className="h-px bg-gray-300 flex-1"></div>
+          </div>
+          <p className="text-sm text-gray-500 font-avenir">{result.stops}</p>
+        </div>
+        <div className="text-center">
+          <p className="text-xl font-bold text-gray-900 font-avenir">{result.arrival}</p>
+          <p className="text-sm text-gray-500 font-avenir">Arrival</p>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <span className="text-sm text-gray-600 font-avenir">Route: {result.route}</span>
+          <span className="text-sm text-gray-600 font-avenir">Baggage: {result.luggageAllowance}</span>
+        </div>
+        <button
+          onClick={() => handleSelectResult(result)}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-medium transition-colors font-avenir"
+        >
+          Select
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderTrainCard = (result) => (
+    <div key={result.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+            <Train className="w-6 h-6 text-green-600" />
+          </div>
+          <div>
+            <h3 className="font-bold text-gray-900 font-avenir">{result.service}</h3>
+            <p className="text-sm text-gray-500 font-avenir">{result.trainNumber}</p>
+          </div>
+        </div>
+        <div className="text-right">
+          <p className="text-2xl font-bold text-gray-900 font-avenir">₹{result.price.toLocaleString()}</p>
+          <p className="text-sm text-gray-500 font-avenir">{result.class}</p>
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="text-center">
+          <p className="text-xl font-bold text-gray-900 font-avenir">{result.departure}</p>
+          <p className="text-sm text-gray-500 font-avenir">Departure</p>
+        </div>
+        <div className="text-center">
+          <p className="text-sm text-gray-500 font-avenir">{result.duration}</p>
+          <div className="flex items-center justify-center my-1">
+            <div className="h-px bg-gray-300 flex-1"></div>
+            <div className="mx-2 w-2 h-2 bg-gray-400 rounded-full"></div>
+            <div className="h-px bg-gray-300 flex-1"></div>
+          </div>
+          <p className="text-sm text-gray-500 font-avenir">Route: {result.route}</p>
+        </div>
+        <div className="text-center">
+          <p className="text-xl font-bold text-gray-900 font-avenir">{result.arrival}</p>
+          <p className="text-sm text-gray-500 font-avenir">Arrival</p>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-4">
+          <span className="text-sm text-gray-600 font-avenir">Seat: {result.seatNumber}</span>
           <div className="flex items-center space-x-2">
-            <Star className="w-5 h-5 text-yellow-500 fill-current" />
-            <span className="font-semibold text-gray-700">{result.rating}</span>
-          </div>
-        </div>
-
-        {searchParams?.travelType !== 'hotels' && (
-          <div className="flex justify-between items-center mb-4 bg-gray-50 rounded-xl p-4">
-            <div className="text-center">
-              <p className="text-sm text-gray-600 font-medium">Departure</p>
-              <p className="text-lg font-bold text-gray-800">{result.departure}</p>
-            </div>
-            <div className="flex-1 mx-4">
-              <div className="flex items-center justify-center">
-                <div className="w-full h-px bg-gray-300 relative">
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-2">
-                    <Clock className="w-4 h-4 text-gray-400" />
-                  </div>
-                </div>
-              </div>
-              <p className="text-center text-sm text-gray-600 mt-1">{result.duration}</p>
-            </div>
-            <div className="text-center">
-              <p className="text-sm text-gray-600 font-medium">Arrival</p>
-              <p className="text-lg font-bold text-gray-800">{result.arrival}</p>
-            </div>
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <div>
-            <p className="text-sm text-gray-600 font-medium">
-              {searchParams?.travelType === 'hotels' ? 'Room Type' : 'Class'}
-            </p>
-            <p className="font-semibold text-gray-800">
-              {result.class || result.roomType}
-            </p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-600 font-medium">
-              {searchParams?.travelType === 'hotels' ? 'Location' : 
-               searchParams?.travelType === 'trains' ? 'Coach' : 'Aircraft'}
-            </p>
-            <p className="font-semibold text-gray-800">
-              {result.location || result.coach || result.aircraft}
-            </p>
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <p className="text-sm text-gray-600 font-medium mb-2">Amenities</p>
-          <div className="flex flex-wrap gap-2">
-            {result.amenities.slice(0, 3).map((amenity, i) => (
-              <span key={i} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">
+            {result.amenities.map((amenity, index) => (
+              <span key={index} className="text-xs bg-gray-100 px-2 py-1 rounded-full text-gray-600 font-avenir">
                 {amenity}
               </span>
             ))}
-            {result.amenities.length > 3 && (
-              <span className="text-blue-600 text-xs font-medium">
-                +{result.amenities.length - 3} more
-              </span>
-            )}
           </div>
         </div>
+        <button
+          onClick={() => handleSelectResult(result)}
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-xl font-medium transition-colors font-avenir"
+        >
+          Select
+        </button>
+      </div>
+    </div>
+  );
 
-        <div className="flex justify-between items-center pt-4 border-t border-gray-100">
-          <div className="text-right">
-            <p className="text-sm text-gray-500 font-light">
-              ₹{result.price.toLocaleString()}/Person
-            </p>
-            <p className="text-2xl font-bold text-blue-600 tracking-tight">
-              ₹{(result.price * (searchParams?.travelers || 1)).toLocaleString()}
-            </p>
-            <p className="text-xs text-gray-400 font-light">Total Price</p>
+  const renderHotelCard = (result) => (
+    <div key={result.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+            <Building className="w-6 h-6 text-purple-600" />
           </div>
+          <div>
+            <h3 className="font-bold text-gray-900 font-avenir">{result.name}</h3>
+            <div className="flex items-center space-x-1">
+              {[...Array(result.rating)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="text-right">
+          <p className="text-2xl font-bold text-gray-900 font-avenir">₹{result.price.toLocaleString()}</p>
+          <p className="text-sm text-gray-500 font-avenir">per night</p>
         </div>
       </div>
-    );
-  };
+      
+      <div className="mb-4">
+        <p className="text-sm text-gray-600 font-avenir mb-2">
+          <MapPin className="w-4 h-4 inline mr-1" />
+          {result.location}
+        </p>
+        <p className="text-sm font-medium text-gray-700 font-avenir">{result.roomType}</p>
+        <p className="text-xs text-gray-500 font-avenir">Check-in: {result.checkIn} • Check-out: {result.checkOut}</p>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="flex flex-wrap gap-1">
+          {result.amenities.slice(0, 4).map((amenity, index) => (
+            <span key={index} className="text-xs bg-gray-100 px-2 py-1 rounded-full text-gray-600 font-avenir">
+              {amenity}
+            </span>
+          ))}
+          {result.amenities.length > 4 && (
+            <span className="text-xs text-gray-500 font-avenir">+{result.amenities.length - 4} more</span>
+          )}
+        </div>
+        <button
+          onClick={() => handleSelectResult(result)}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-xl font-medium transition-colors font-avenir"
+        >
+          Select
+        </button>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-gray-50">
+    <div className="min-h-screen bg-gray-50">
       <Header teamName={teamName} />
       
       <div className="pt-24 px-6 pb-20">
-        <div className="max-w-6xl mx-auto">
-          {/* Back Button */}
-          <div className="mb-8 animate-slide-in-left">
-            <button
-              onClick={handleBackClick}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 group"
-            >
-              <ArrowLeft className="w-5 h-5 transition-transform duration-200 group-hover:-translate-x-1" />
-              <span className="font-medium">Back to Search</span>
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={onBack}
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 group"
+              >
+                <ArrowLeft className="w-5 h-5 transition-transform duration-200 group-hover:-translate-x-1" />
+                <span className="font-medium font-avenir">Back</span>
+              </button>
+              <div className="h-6 w-px bg-gray-300"></div>
+              <h1 className="text-2xl font-bold text-gray-900 font-avenir">Search Results</h1>
+            </div>
+            
+            <button className="flex items-center space-x-2 bg-white border border-gray-200 px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors">
+              <Filter className="w-4 h-4" />
+              <span className="font-medium font-avenir">Filters</span>
             </button>
           </div>
 
-          {/* Header */}
-          <div className="text-center mb-12 animate-fade-in-up">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4 tracking-tight">
-              Premium {searchParams?.travelType} Options
-            </h1>
-            <p className="text-xl text-gray-600 font-light">
-              {searchParams?.fromDestination} → {searchParams?.toDestination}
-            </p>
-            <div className="mt-4 text-sm text-gray-500">
-              <span className="bg-blue-50 text-blue-700 px-4 py-2 rounded-full font-medium border border-blue-200">
-                {searchParams?.travelers} Traveler{searchParams?.travelers !== 1 ? 's' : ''} • {searchParams?.time}
-              </span>
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
-          </div>
-
-          {/* Results */}
-          <div className="space-y-6">
-            {results.map((result, index) => renderResultCard(result, index))}
-          </div>
-
-          {/* Book Now Button */}
-          {selectedResult && (
-            <div className="fixed bottom-8 right-8 z-50 animate-scale-in">
-              <button
-                onClick={handleBookNow}
-                className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-2xl transition-all duration-300 transform hover:scale-105 button-elegant backdrop-blur-glass"
-              >
-                Book Selected Option
-              </button>
+          ) : (
+            <div className="space-y-6">
+              {searchResults.map((result) => {
+                if (result.type === 'flight') return renderFlightCard(result);
+                if (result.type === 'train') return renderTrainCard(result);
+                if (result.type === 'hotel') return renderHotelCard(result);
+                return null;
+              })}
             </div>
           )}
         </div>

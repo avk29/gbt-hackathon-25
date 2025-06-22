@@ -2,6 +2,11 @@
 import React, { useState } from 'react';
 import { Calendar, User, Search, Plane, Train, Building } from 'lucide-react';
 import { Checkbox } from '../components/ui/checkbox';
+import { format } from 'date-fns';
+import { Button } from './ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Calendar as CalendarComponent } from './ui/calendar';
+import { cn } from '../lib/utils';
 
 const SearchForm = ({ onSearch }) => {
   const [travelTypes, setTravelTypes] = useState({
@@ -9,8 +14,8 @@ const SearchForm = ({ onSearch }) => {
     trains: false,
     hotels: false
   });
-  const [fromDestination, setFromDestination] = useState('');
-  const [toDestination, setToDestination] = useState('');
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
   const [travelers, setTravelers] = useState(1);
 
   const handleTravelTypeChange = (type, checked) => {
@@ -24,19 +29,19 @@ const SearchForm = ({ onSearch }) => {
     const selectedTypes = Object.keys(travelTypes).filter(type => travelTypes[type]);
     onSearch({
       travelTypes: selectedTypes,
-      fromDestination,
-      toDestination,
+      fromDate,
+      toDate,
       travelers
     });
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-md rounded-3xl p-8 shadow-2xl max-w-6xl mx-auto border border-white/20 font-avenir">
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-end">
+    <div className="bg-white/95 backdrop-blur-md rounded-3xl p-8 shadow-2xl max-w-7xl mx-auto border border-white/20 font-avenir">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         {/* Travel Types */}
-        <div className="md:col-span-1">
+        <div className="lg:col-span-1 flex flex-col">
           <label className="block text-sm font-medium text-gray-700 mb-4 font-avenir">Travel Type</label>
-          <div className="space-y-3">
+          <div className="space-y-3 flex-1 flex flex-col justify-center">
             <div className="flex items-center space-x-3">
               <Checkbox
                 id="flights"
@@ -82,54 +87,95 @@ const SearchForm = ({ onSearch }) => {
           </div>
         </div>
 
-        {/* From Destination */}
-        <div className="md:col-span-1">
+        {/* From Date */}
+        <div className="lg:col-span-1 flex flex-col">
           <label className="block text-sm font-medium text-gray-700 mb-3 font-avenir">From</label>
-          <input
-            type="text"
-            value={fromDestination}
-            onChange={(e) => setFromDestination(e.target.value)}
-            placeholder="Origin city"
-            className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white font-avenir text-gray-800 shadow-sm"
-          />
+          <div className="flex-1 flex items-end">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full h-14 justify-start text-left font-normal bg-white/80 backdrop-blur-sm hover:bg-white font-avenir border-gray-200 rounded-xl shadow-sm",
+                    !fromDate && "text-muted-foreground"
+                  )}
+                >
+                  <Calendar className="mr-2 h-4 w-4" />
+                  {fromDate ? format(fromDate, "PPP") : <span>Select date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <CalendarComponent
+                  mode="single"
+                  selected={fromDate}
+                  onSelect={setFromDate}
+                  initialFocus
+                  className="p-3 pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
 
-        {/* To Destination */}
-        <div className="md:col-span-1">
+        {/* To Date */}
+        <div className="lg:col-span-1 flex flex-col">
           <label className="block text-sm font-medium text-gray-700 mb-3 font-avenir">To</label>
-          <input
-            type="text"
-            value={toDestination}
-            onChange={(e) => setToDestination(e.target.value)}
-            placeholder="Destination city"
-            className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white font-avenir text-gray-800 shadow-sm"
-          />
+          <div className="flex-1 flex items-end">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full h-14 justify-start text-left font-normal bg-white/80 backdrop-blur-sm hover:bg-white font-avenir border-gray-200 rounded-xl shadow-sm",
+                    !toDate && "text-muted-foreground"
+                  )}
+                >
+                  <Calendar className="mr-2 h-4 w-4" />
+                  {toDate ? format(toDate, "PPP") : <span>Select date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <CalendarComponent
+                  mode="single"
+                  selected={toDate}
+                  onSelect={setToDate}
+                  initialFocus
+                  className="p-3 pointer-events-auto"
+                  disabled={(date) => fromDate && date < fromDate}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
 
         {/* Travelers */}
-        <div className="md:col-span-1">
+        <div className="lg:col-span-1 flex flex-col">
           <label className="block text-sm font-medium text-gray-700 mb-3 font-avenir">Travelers</label>
-          <div className="relative">
-            <input
-              type="number"
-              min="1"
-              value={travelers}
-              onChange={(e) => setTravelers(parseInt(e.target.value))}
-              className="w-full p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white font-avenir text-gray-800 shadow-sm"
-            />
-            <User className="absolute right-4 top-4 w-5 h-5 text-gray-400 pointer-events-none" />
+          <div className="flex-1 flex items-end">
+            <div className="relative w-full">
+              <input
+                type="number"
+                min="1"
+                value={travelers}
+                onChange={(e) => setTravelers(parseInt(e.target.value))}
+                className="w-full h-14 p-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm transition-all duration-300 hover:bg-white font-avenir text-gray-800 shadow-sm"
+              />
+              <User className="absolute right-4 top-4 w-5 h-5 text-gray-400 pointer-events-none" />
+            </div>
           </div>
         </div>
 
         {/* Search Button */}
-        <div className="md:col-span-1">
-          <button
-            onClick={handleSearch}
-            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white p-4 rounded-xl font-medium transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-105 font-avenir"
-          >
-            <Search className="w-5 h-5" />
-            <span>Search</span>
-          </button>
+        <div className="lg:col-span-1 flex flex-col">
+          <div className="flex-1 flex items-end">
+            <button
+              onClick={handleSearch}
+              className="w-full h-14 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-medium transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-105 font-avenir"
+            >
+              <Search className="w-5 h-5" />
+              <span>Search</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

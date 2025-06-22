@@ -45,17 +45,17 @@ const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <div className="absolute bottom-4 left-4 text-white">
-          <h3 className="text-2xl font-bold tracking-tight">{trip.cityName}</h3>
-          <p className="text-sm opacity-90 font-light">{trip.country}</p>
+          <h3 className="text-2xl font-bold tracking-tight font-avenir">{trip.cityName}</h3>
+          <p className="text-sm opacity-90 font-light font-avenir">{trip.country}</p>
         </div>
       </div>
       
       <div className="p-6">
         <div className="mb-4">
-          <p className="text-lg font-semibold text-gray-800 tracking-tight">
+          <p className="text-lg font-semibold text-gray-800 tracking-tight font-avenir">
             {nights} Night{nights !== 1 ? 's' : ''} / {days} Day{days !== 1 ? 's' : ''}
           </p>
-          <p className="text-sm text-gray-600 font-light">{trip.meals}</p>
+          <p className="text-sm text-gray-600 font-light font-avenir">{trip.meals}</p>
         </div>
 
         {/* Travel Services */}
@@ -65,7 +65,7 @@ const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-2">
                   <Plane className="w-4 h-4 text-blue-600" />
-                  <span className="font-medium text-blue-800">Flight</span>
+                  <span className="font-medium text-blue-800 font-avenir">Flight</span>
                 </div>
                 <button
                   onClick={(e) => {
@@ -77,7 +77,7 @@ const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
                   <Edit3 className="w-3 h-3" />
                 </button>
               </div>
-              <div className="text-xs text-blue-700 space-y-1">
+              <div className="text-xs text-blue-700 space-y-1 font-avenir">
                 <p><span className="font-medium">Airline:</span> {trip.flightDetails.airline}</p>
                 <p><span className="font-medium">Class:</span> {trip.flightDetails.class}</p>
                 <p><span className="font-medium">Seat:</span> {trip.flightDetails.seatNumber}</p>
@@ -90,7 +90,7 @@ const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-2">
                   <Train className="w-4 h-4 text-green-600" />
-                  <span className="font-medium text-green-800">Train</span>
+                  <span className="font-medium text-green-800 font-avenir">Train</span>
                 </div>
                 <button
                   onClick={(e) => {
@@ -102,7 +102,7 @@ const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
                   <Edit3 className="w-3 h-3" />
                 </button>
               </div>
-              <div className="text-xs text-green-700 space-y-1">
+              <div className="text-xs text-green-700 space-y-1 font-avenir">
                 <p><span className="font-medium">Service:</span> {trip.trainDetails.service}</p>
                 <p><span className="font-medium">Class:</span> {trip.trainDetails.class}</p>
                 <p><span className="font-medium">Seat:</span> {trip.trainDetails.seatNumber}</p>
@@ -115,7 +115,7 @@ const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-2">
                   <Building className="w-4 h-4 text-purple-600" />
-                  <span className="font-medium text-purple-800">Hotel</span>
+                  <span className="font-medium text-purple-800 font-avenir">Hotel</span>
                 </div>
                 <button
                   onClick={(e) => {
@@ -127,7 +127,7 @@ const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
                   <Edit3 className="w-3 h-3" />
                 </button>
               </div>
-              <div className="text-xs text-purple-700 space-y-1">
+              <div className="text-xs text-purple-700 space-y-1 font-avenir">
                 <p><span className="font-medium">Hotel:</span> {trip.hotelDetails.name}</p>
                 <p><span className="font-medium">Room:</span> {trip.hotelDetails.roomType}</p>
                 <p><span className="font-medium">Number:</span> {trip.hotelDetails.roomNumber}</p>
@@ -137,16 +137,16 @@ const TripCard = ({ trip, searchParams, selected, onSelect, onModify }) => {
         </div>
 
         <div className="space-y-2 mb-4">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 font-avenir">
             <span className="font-medium text-gray-800">Transfer:</span> <span className="font-light">{trip.pickupDrop}</span>
           </p>
         </div>
 
         <div className="border-t border-gray-100 pt-4">
           <div className="text-right">
-            <p className="text-sm text-gray-500 font-light">₹{trip.pricePerPerson.toLocaleString()}/Person</p>
-            <p className="text-2xl font-bold text-blue-600 tracking-tight">₹{totalPrice.toLocaleString()}</p>
-            <p className="text-xs text-gray-400 font-light">Total Price</p>
+            <p className="text-sm text-gray-500 font-light font-avenir">₹{trip.pricePerPerson.toLocaleString()}/Person</p>
+            <p className="text-2xl font-bold text-blue-600 tracking-tight font-avenir">₹{totalPrice.toLocaleString()}</p>
+            <p className="text-xs text-gray-400 font-light font-avenir">Total Price</p>
           </div>
         </div>
       </div>

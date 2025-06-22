@@ -1,228 +1,217 @@
 
-import React, { useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import React from 'react';
+import { ArrowLeft, Check, Plane, Train, Building, Calendar, Users, MapPin, Clock } from 'lucide-react';
 import Header from '../components/Header';
-import { Calendar, Clock, User, MapPin, CreditCard, Edit3, X, Check } from 'lucide-react';
 
 const ConfirmationPage = ({ selectedTrip, searchParams, teamName, onBack }) => {
-  const [bookingStatus] = useState('confirmed'); // confirmed, pending, cancelled
-  const [showAmenities, setShowAmenities] = useState(false);
-
   if (!selectedTrip) {
-    return <div>No trip selected</div>;
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-xl text-gray-600 font-avenir">No trip selected</p>
+      </div>
+    );
   }
 
   const totalPrice = selectedTrip.pricePerPerson * (searchParams?.travelers || 1);
-  const bookingReference = 'AMX' + Math.random().toString(36).substr(2, 9).toUpperCase();
-
-  const getTravelDetails = () => {
-    switch (searchParams?.travelType) {
-      case 'flights':
-        return selectedTrip.flightDetails;
-      case 'trains':
-        return selectedTrip.trainDetails;
-      case 'hotels':
-        return selectedTrip.hotelDetails;
-      default:
-        return selectedTrip.flightDetails;
-    }
-  };
-
-  const details = getTravelDetails();
-
-  const amenities = [
-    'Free WiFi', 'Power Sockets', 'Air Conditioning', 'Wheelchair Accessible',
-    'Bar Car', 'Restaurant', 'Business Lounge Access', 'Priority Boarding'
-  ];
-
-  const handleBackClick = () => {
-    if (onBack) {
-      onBack();
-    }
-  };
+  const selectedTypes = searchParams?.travelTypes || ['flights'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-gray-50">
+    <div className="min-h-screen bg-gray-50">
       <Header teamName={teamName} />
       
-      <div className="pt-24 px-6 pb-12">
+      <div className="pt-24 px-6 pb-20">
         <div className="max-w-4xl mx-auto">
-          {/* Back Button */}
-          <div className="mb-8 animate-slide-in-left">
+          {/* Header */}
+          <div className="flex items-center space-x-4 mb-8">
             <button
-              onClick={handleBackClick}
+              onClick={onBack}
               className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 group"
             >
               <ArrowLeft className="w-5 h-5 transition-transform duration-200 group-hover:-translate-x-1" />
-              <span className="font-medium">Back to Trip Selection</span>
+              <span className="font-medium font-avenir">Back</span>
             </button>
+            <div className="h-6 w-px bg-gray-300"></div>
+            <h1 className="text-2xl font-bold text-gray-900 font-avenir">Booking Confirmation</h1>
           </div>
 
-          {/* Status Header */}
-          <div className="bg-white rounded-3xl shadow-lg p-8 mb-8 animate-fade-in-up border border-gray-100">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-4">
-                <div className={`p-3 rounded-full ${
-                  bookingStatus === 'confirmed' ? 'bg-green-100 text-green-600' :
-                  bookingStatus === 'pending' ? 'bg-yellow-100 text-yellow-600' :
-                  'bg-red-100 text-red-600'
-                }`}>
-                  {bookingStatus === 'confirmed' ? <Check className="w-6 h-6" /> :
-                   bookingStatus === 'pending' ? <Clock className="w-6 h-6" /> :
-                   <X className="w-6 h-6" />}
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-800 tracking-tight">
-                    Booking {bookingStatus === 'confirmed' ? 'Confirmed' : 
-                           bookingStatus === 'pending' ? 'Pending' : 'Cancelled'}
-                  </h1>
-                  <p className="text-gray-600 font-light">Reference: {bookingReference}</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="text-3xl font-bold text-blue-600 tracking-tight">₹{totalPrice.toLocaleString()}</p>
-                <p className="text-sm text-gray-500 font-light">Total Amount</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="flex items-center space-x-3">
-                <MapPin className="w-5 h-5 text-gray-400" />
-                <div>
-                  <p className="font-semibold text-gray-800">{selectedTrip.cityName}</p>
-                  <p className="text-sm text-gray-600 font-light">{selectedTrip.country}</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Calendar className="w-5 h-5 text-gray-400" />
-                <div>
-                  <p className="font-semibold text-gray-800">{selectedTrip.duration.nights} Nights</p>
-                  <p className="text-sm text-gray-600 font-light">{selectedTrip.duration.days} Days</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3">
-                <User className="w-5 h-5 text-gray-400" />
-                <div>
-                  <p className="font-semibold text-gray-800">{searchParams?.travelers || 1} Traveler{(searchParams?.travelers || 1) !== 1 ? 's' : ''}</p>
-                  <p className="text-sm text-gray-600 font-light">Business Class</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Detailed Information */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Travel Details */}
-            <div className="bg-white rounded-3xl shadow-lg p-6 animate-scale-in border border-gray-100" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
-              <h2 className="text-xl font-bold text-gray-800 mb-6 tracking-tight">Travel Details</h2>
-              
-              {details && (
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 font-light">Service:</span>
-                    <span className="font-semibold">{details.airline || details.service || details.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 font-light">Reference:</span>
-                    <span className="font-semibold">{details.flightNumber || details.trainNumber || 'N/A'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 font-light">Class:</span>
-                    <span className="font-semibold">{details.class || details.roomType}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 font-light">{searchParams?.travelType === 'hotels' ? 'Room' : 'Seat'}:</span>
-                    <span className="font-semibold">{details.roomNumber || details.seatNumber}</span>
-                  </div>
-                  {details.departure && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600 font-light">Departure:</span>
-                      <span className="font-semibold">{details.departure}</span>
-                    </div>
-                  )}
-                  {details.arrival && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600 font-light">Arrival:</span>
-                      <span className="font-semibold">{details.arrival}</span>
-                    </div>
-                  )}
-                  {details.luggageAllowance && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600 font-light">Luggage:</span>
-                      <span className="font-semibold">{details.luggageAllowance}</span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div className="mt-6 pt-6 border-t border-gray-100">
-                <div className="flex justify-between mb-2">
-                  <span className="text-gray-600 font-light">Meals:</span>
-                  <span className="font-semibold">{selectedTrip.meals}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 font-light">Transfer:</span>
-                  <span className="font-semibold">{selectedTrip.pickupDrop}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Booking Actions */}
-            <div className="bg-white rounded-3xl shadow-lg p-6 animate-scale-in border border-gray-100" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
-              <h2 className="text-xl font-bold text-gray-800 mb-6 tracking-tight">Booking Actions</h2>
-              
-              <div className="space-y-3">
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl font-medium transition-all duration-200 hover:scale-105 button-elegant">
-                  Sync to Calendar
-                </button>
-                <button className="w-full bg-gray-50 hover:bg-gray-100 text-gray-800 py-3 px-4 rounded-xl font-medium transition-all duration-200 hover:scale-105 flex items-center justify-center space-x-2 border border-gray-200">
-                  <Edit3 className="w-4 h-4" />
-                  <span>Change Trip</span>
-                </button>
-                <button className="w-full bg-green-50 hover:bg-green-100 text-green-800 py-3 px-4 rounded-xl font-medium transition-all duration-200 hover:scale-105 border border-green-200">
-                  Split Trip
-                </button>
-                <button className="w-full bg-purple-50 hover:bg-purple-100 text-purple-800 py-3 px-4 rounded-xl font-medium transition-all duration-200 hover:scale-105 border border-purple-200">
-                  Merge with Another Trip
-                </button>
-                <button className="w-full bg-yellow-50 hover:bg-yellow-100 text-yellow-800 py-3 px-4 rounded-xl font-medium transition-all duration-200 hover:scale-105 border border-yellow-200">
-                  Apply Fee
-                </button>
-                <button className="w-full bg-red-50 hover:bg-red-100 text-red-800 py-3 px-4 rounded-xl font-medium transition-all duration-200 hover:scale-105 border border-red-200">
-                  Cancel Trip
-                </button>
-              </div>
-
-              <div className="mt-6 pt-6 border-t border-gray-100">
-                <button 
-                  onClick={() => setShowAmenities(!showAmenities)}
-                  className="w-full text-left text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
-                >
-                  {showAmenities ? 'Hide' : 'Show'} Amenities & Facilities
-                </button>
-                
-                {showAmenities && (
-                  <div className="mt-4 grid grid-cols-2 gap-2 animate-fade-in-up">
-                    {amenities.map((amenity, index) => (
-                      <div key={index} className="flex items-center space-x-2 text-sm text-gray-600">
-                        <Check className="w-4 h-4 text-green-500" />
-                        <span className="font-light">{amenity}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Manager Approval */}
-          <div className="bg-white rounded-3xl shadow-lg p-6 mt-8 animate-fade-in-up border border-gray-100" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
-            <h2 className="text-xl font-bold text-gray-800 mb-4 tracking-tight">Approval Status</h2>
+          {/* Success Message */}
+          <div className="bg-green-50 border border-green-200 rounded-2xl p-6 mb-8">
             <div className="flex items-center space-x-3">
-              <Check className="w-5 h-5 text-green-500" />
-              <span className="text-gray-700 font-light">Manager approval: <span className="font-semibold text-green-600">Approved</span></span>
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <Check className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-green-800 font-avenir">Booking Confirmed!</h2>
+                <p className="text-green-700 font-avenir">Your trip to {selectedTrip.cityName} has been successfully booked.</p>
+              </div>
             </div>
-            <p className="text-sm text-gray-500 mt-2 font-light">Approved by Finance Manager on {new Date().toLocaleDateString()}</p>
+          </div>
+
+          {/* Trip Summary */}
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 mb-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-6 font-avenir">Trip Summary</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              <div>
+                <img 
+                  src={selectedTrip.image} 
+                  alt={selectedTrip.cityName}
+                  className="w-full h-48 object-cover rounded-xl"
+                />
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-2xl font-bold text-gray-900 font-avenir">{selectedTrip.cityName}</h4>
+                  <p className="text-gray-600 font-avenir">{selectedTrip.country}</p>
+                </div>
+                <div className="flex items-center space-x-4 text-sm text-gray-600">
+                  <div className="flex items-center space-x-2">
+                    <Calendar className="w-4 h-4" />
+                    <span className="font-avenir">{selectedTrip.duration?.nights} Nights / {selectedTrip.duration?.days} Days</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Users className="w-4 h-4" />
+                    <span className="font-avenir">{searchParams?.travelers || 1} Traveler{(searchParams?.travelers || 1) !== 1 ? 's' : ''}</span>
+                  </div>
+                </div>
+                <div className="bg-blue-50 p-4 rounded-xl">
+                  <p className="text-lg font-bold text-blue-900 font-avenir">Total: ₹{totalPrice.toLocaleString()}</p>
+                  <p className="text-sm text-blue-700 font-avenir">₹{selectedTrip.pricePerPerson.toLocaleString()} per person</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Booking Details */}
+          <div className="space-y-6">
+            {selectedTypes.includes('flights') && selectedTrip.flightDetails && (
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                    <Plane className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-900 font-avenir">Flight Details</h4>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Airline:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.flightDetails.airline}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Flight Number:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.flightDetails.flightNumber}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Class:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.flightDetails.class}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Departure:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.flightDetails.departure}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Arrival:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.flightDetails.arrival}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Seat:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.flightDetails.seatNumber}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {selectedTypes.includes('trains') && selectedTrip.trainDetails && (
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                    <Train className="w-5 h-5 text-green-600" />
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-900 font-avenir">Train Details</h4>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Service:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.trainDetails.service}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Train Number:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.trainDetails.trainNumber}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Class:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.trainDetails.class}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Departure:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.trainDetails.departure}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Arrival:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.trainDetails.arrival}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Seat:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.trainDetails.seatNumber}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {selectedTypes.includes('hotels') && selectedTrip.hotelDetails && (
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                    <Building className="w-5 h-5 text-purple-600" />
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-900 font-avenir">Hotel Details</h4>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Hotel:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.hotelDetails.name}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Room Type:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.hotelDetails.roomType}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Room Number:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.hotelDetails.roomNumber}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Check-in:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.hotelDetails.checkIn}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 font-avenir">Check-out:</span>
+                      <span className="font-medium text-gray-900 font-avenir">{selectedTrip.hotelDetails.checkOut}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-center space-x-4 mt-8">
+            <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-8 py-3 rounded-xl font-medium transition-colors font-avenir">
+              Download PDF
+            </button>
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-medium transition-colors font-avenir">
+              Send Confirmation Email
+            </button>
           </div>
         </div>
       </div>

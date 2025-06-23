@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Filter, Plane, Train, Building, Clock, MapPin, Star, Wifi, Coffee, Users, ChevronDown, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Filter, Plane, Train, Building, Clock, MapPin, Star, Wifi, Coffee, Users, ChevronDown, CheckCircle, ChevronUp } from 'lucide-react';
 import Header from '../components/Header';
 
 const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
@@ -12,6 +12,14 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
   
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expandedFilters, setExpandedFilters] = useState({
+    route: true,
+    class: true,
+    ticketType: true,
+    carrier: true,
+    exchangeability: true,
+    refundability: true
+  });
 
   // Check if we're editing a specific service
   const editingService = searchParams?.editTrip?.editService;
@@ -50,7 +58,9 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
           aircraft: 'A320',
           luggageAllowance: '15kg',
           amenities: ['WiFi', 'Meals'],
-          rating: 4.2
+          rating: 4.2,
+          exchangeable: true,
+          refundable: false
         },
         {
           id: 'flight-2',
@@ -67,7 +77,9 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
           aircraft: 'B787',
           luggageAllowance: '30kg',
           amenities: ['WiFi', 'Premium Meals', 'Lounge Access'],
-          rating: 4.8
+          rating: 4.8,
+          exchangeable: true,
+          refundable: true
         }
       );
     }
@@ -79,30 +91,54 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
           type: 'train',
           service: 'Rajdhani Express',
           trainNumber: '12951',
-          departure: '16:55',
-          arrival: '08:35',
-          duration: '15h 40m',
-          price: 3500,
-          class: '3A',
-          route: 'NDLS → CSMT',
-          seatNumber: 'B1-23',
+          departure: '07:24',
+          arrival: '11:52',
+          duration: '4h 28m',
+          price: 2159,
+          class: 'Second class',
+          route: 'Stockholm Central → Malmö C',
+          seatNumber: 'Direct',
           amenities: ['AC', 'Meals', 'Bedding'],
-          rating: 4.5
+          rating: 4.5,
+          exchangeable: false,
+          refundable: false,
+          carrier: 'SJ'
         },
         {
           id: 'train-2',
           type: 'train',
-          service: 'Shatabdi Express',
-          trainNumber: '12001',
-          departure: '06:00',
-          arrival: '14:25',
-          duration: '8h 25m',
-          price: 2200,
-          class: 'CC',
-          route: 'NDLS → CSMT',
-          seatNumber: 'C2-15',
+          service: 'Snälltåget',
+          trainNumber: 'SN 334',
+          departure: '09:10',
+          arrival: '14:08',
+          duration: '4h 58m',
+          price: 2747,
+          class: 'Second class',
+          route: 'Stockholm Central → Malmö C',
+          seatNumber: 'Direct',
           amenities: ['AC', 'Breakfast', 'Lunch'],
-          rating: 4.3
+          rating: 4.3,
+          exchangeable: false,
+          refundable: true,
+          carrier: 'Snälltåget'
+        },
+        {
+          id: 'train-3',
+          type: 'train',
+          service: 'Express Train',
+          trainNumber: 'SJ 442',
+          departure: '09:21',
+          arrival: '13:52',
+          duration: '4h 31m',
+          price: 2159,
+          class: 'Second class',
+          route: 'Stockholm Central → Malmö C',
+          seatNumber: 'Direct',
+          amenities: ['AC', 'WiFi'],
+          rating: 4.4,
+          exchangeable: false,
+          refundable: false,
+          carrier: 'SJ'
         }
       );
     }
@@ -142,6 +178,30 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
   const handleSelectResult = (result) => {
     onSelect(result, searchParams);
   };
+
+  const toggleFilter = (filterName) => {
+    setExpandedFilters(prev => ({
+      ...prev,
+      [filterName]: !prev[filterName]
+    }));
+  };
+
+  const renderFilterSection = (title, filterKey, content) => (
+    <div className="border-b border-gray-200 pb-4 mb-4">
+      <button
+        onClick={() => toggleFilter(filterKey)}
+        className="flex items-center justify-between w-full text-left text-gray-900 font-medium mb-3"
+      >
+        <span>{title}</span>
+        {expandedFilters[filterKey] ? (
+          <ChevronUp className="w-4 h-4 text-gray-500" />
+        ) : (
+          <ChevronDown className="w-4 h-4 text-gray-500" />
+        )}
+      </button>
+      {expandedFilters[filterKey] && content}
+    </div>
+  );
 
   const renderFlightCard = (result) => (
     <div key={result.id} className="bg-white rounded-2xl border border-gray-100 p-6 mb-6 hover:shadow-xl transition-all duration-300">
@@ -212,69 +272,92 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
   );
 
   const renderTrainCard = (result) => (
-    <div key={result.id} className="bg-white rounded-2xl border border-gray-100 p-6 mb-6 hover:shadow-xl transition-all duration-300">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
-            <Train className="w-8 h-8 text-white" />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-gray-900 font-avenir">{result.service}</h3>
-            <p className="text-gray-500 font-avenir">{result.trainNumber}</p>
-            <div className="flex items-center space-x-1 mt-1">
-              {[...Array(Math.floor(result.rating))].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-              ))}
-              <span className="text-sm text-gray-500 ml-1">{result.rating}</span>
+    <div key={result.id} className="bg-white border border-gray-200 rounded-lg mb-4 overflow-hidden hover:shadow-md transition-shadow">
+      {/* Header with time and route info */}
+      <div className="p-4 border-b border-gray-100">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-2">
+              <Train className="w-5 h-5 text-blue-600" />
+              <span className="text-sm text-gray-600">{result.carrier}</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="text-center">
+                <div className="text-lg font-semibold text-gray-900">{result.departure}</div>
+                <div className="text-sm text-gray-500">Stockholm Central</div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <div className="w-8 h-0.5 bg-gray-300"></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-semibold text-gray-900">{result.arrival}</div>
+                <div className="text-sm text-gray-500">Malmö C</div>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="text-right">
-          <div className="text-3xl font-bold text-green-600 font-avenir">₹{result.price.toLocaleString()}</div>
-          <div className="text-gray-500 font-avenir">{result.class}</div>
-        </div>
-      </div>
-      
-      <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 mb-6">
-        <div className="grid grid-cols-3 gap-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-gray-900 font-avenir">{result.departure}</div>
-            <div className="text-gray-500 font-avenir">NDLS</div>
+          <div className="text-right">
+            <div className="text-lg font-semibold text-gray-900">{result.duration}</div>
+            <div className="text-sm text-gray-500">{result.seatNumber}</div>
           </div>
-          <div className="text-center">
-            <div className="text-gray-500 font-avenir">{result.duration}</div>
-            <div className="flex items-center justify-center my-2">
-              <div className="h-0.5 bg-green-300 flex-1"></div>
-              <div className="mx-3 w-3 h-3 bg-green-500 rounded-full"></div>
-              <div className="h-0.5 bg-green-300 flex-1"></div>
-            </div>
-            <div className="text-gray-500 font-avenir">Direct</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-gray-900 font-avenir">{result.arrival}</div>
-            <div className="text-gray-500 font-avenir">CSMT</div>
+          <div className="text-right">
+            <div className="text-xs text-gray-500 mb-1">Starting at</div>
+            <div className="text-xl font-bold text-gray-900">EUR{(result.price / 100).toFixed(2)}</div>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-6 text-sm text-gray-600">
-          <span className="font-avenir">Seat: {result.seatNumber}</span>
-          <div className="flex items-center space-x-2">
-            {result.amenities.slice(0, 3).map((amenity, index) => (
-              <span key={index} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-avenir">
-                {amenity}
-              </span>
-            ))}
-          </div>
+      {/* Fare options */}
+      <div className="p-4">
+        <div className="flex space-x-2 mb-4">
+          <button className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md">Fare</button>
+          <button className="px-3 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded-md">Details</button>
         </div>
-        <button
-          onClick={() => handleSelectResult(result)}
-          className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300 font-avenir flex items-center space-x-2"
-        >
-          <CheckCircle className="w-5 h-5" />
-          <span>Select Train</span>
-        </button>
+
+        <div className="space-y-3">
+          <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+            <div className="flex-1">
+              <div className="text-sm font-medium text-gray-900">{result.class} / Non Flexible</div>
+              <div className="text-xs text-gray-500 mt-1">
+                <span className="inline-block mr-4">Not Exchangeable</span>
+                <span className="inline-block">Non Refundable</span>
+              </div>
+            </div>
+            <div className="text-center mr-4">
+              <div className="text-lg font-bold text-gray-900">EUR{(result.price / 100 * 0.63).toFixed(2)}</div>
+              <div className="text-xs text-gray-500">One-way</div>
+            </div>
+            <button
+              onClick={() => handleSelectResult(result)}
+              className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Select
+            </button>
+          </div>
+
+          {result.refundable && (
+            <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+              <div className="flex-1">
+                <div className="text-sm font-medium text-gray-900">{result.class} / Refundable</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  <span className="inline-block mr-4">Not Exchangeable</span>
+                  <span className="inline-block">Refundable</span>
+                </div>
+              </div>
+              <div className="text-center mr-4">
+                <div className="text-lg font-bold text-gray-900">EUR{(result.price / 100).toFixed(2)}</div>
+                <div className="text-xs text-gray-500">One-way</div>
+              </div>
+              <button
+                onClick={() => handleSelectResult(result)}
+                className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Select
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -339,63 +422,135 @@ const SearchResultsPage = ({ searchParams, teamName, onBack, onSelect }) => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+    <div className="min-h-screen bg-gray-50">
       <Header teamName={teamName} />
       
-      <div className="pt-24 px-6 pb-20">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={onBack}
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 group"
-              >
-                <ArrowLeft className="w-5 h-5 transition-transform duration-200 group-hover:-translate-x-1" />
-                <span className="font-medium font-avenir">Back</span>
-              </button>
-              <div className="h-6 w-px bg-gray-300"></div>
-              <h1 className="text-3xl font-bold text-gray-900 font-avenir">
-                {editingService ? `Edit ${editingService.charAt(0).toUpperCase() + editingService.slice(1)}` : 'Search Results'}
-              </h1>
+      <div className="pt-20">
+        {/* Search header */}
+        <div className="bg-blue-600 text-white p-4">
+          <div className="max-w-7xl mx-auto flex items-center space-x-4">
+            <button
+              onClick={onBack}
+              className="flex items-center space-x-2 text-white hover:text-blue-200 transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div className="flex items-center space-x-2">
+              <MapPin className="w-5 h-5" />
+              <span className="font-medium">Stockholm City Station to Malmö C</span>
             </div>
+            <div className="text-sm opacity-90">20 Jun • 1 traveller</div>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto flex">
+          {/* Sidebar Filters */}
+          <div className="w-80 bg-white p-6 shadow-sm">
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">Filters</h3>
             
-            <div className="flex items-center space-x-4">
-              <button className="flex items-center space-x-2 bg-white border border-gray-200 px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
-                <Filter className="w-4 h-4 text-gray-600" />
-                <span className="font-medium font-avenir text-gray-700">Filters</span>
-                <ChevronDown className="w-4 h-4 text-gray-600" />
-              </button>
-              <select className="bg-white border border-gray-200 px-3 py-2 rounded-xl font-avenir text-gray-700 shadow-sm">
-                <option>Sort by Price</option>
-                <option>Sort by Duration</option>
-                <option>Sort by Rating</option>
-              </select>
-            </div>
+            {renderFilterSection(
+              "Route",
+              "route",
+              <div className="space-y-2">
+                <label className="flex items-center space-x-2">
+                  <input type="checkbox" defaultChecked className="rounded border-gray-300" />
+                  <span className="text-sm text-gray-700">Direct</span>
+                </label>
+              </div>
+            )}
+
+            {renderFilterSection(
+              "Class",
+              "class",
+              <div className="space-y-2">
+                <label className="flex items-center space-x-2">
+                  <input type="checkbox" className="rounded border-gray-300" />
+                  <span className="text-sm text-gray-700">Second class</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input type="checkbox" className="rounded border-gray-300" />
+                  <span className="text-sm text-gray-700">First class</span>
+                </label>
+              </div>
+            )}
+
+            {renderFilterSection(
+              "Ticket type",
+              "ticketType",
+              <div className="space-y-2">
+                <label className="flex items-center space-x-2">
+                  <input type="checkbox" defaultChecked className="rounded border-gray-300" />
+                  <span className="text-sm text-gray-700">Single ticket</span>
+                </label>
+              </div>
+            )}
+
+            {renderFilterSection(
+              "Carrier",
+              "carrier",
+              <div className="space-y-2">
+                <label className="flex items-center space-x-2">
+                  <input type="checkbox" className="rounded border-gray-300" />
+                  <span className="text-sm text-gray-700">SJ</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input type="checkbox" className="rounded border-gray-300" />
+                  <span className="text-sm text-gray-700">Snälltåget</span>
+                </label>
+              </div>
+            )}
+
+            {renderFilterSection(
+              "Exchangeability",
+              "exchangeability",
+              <div className="space-y-2">
+                <label className="flex items-center space-x-2">
+                  <input type="checkbox" defaultChecked className="rounded border-gray-300" />
+                  <span className="text-sm text-gray-700">Not Exchangeable</span>
+                </label>
+              </div>
+            )}
+
+            {renderFilterSection(
+              "Refundability",
+              "refundability",
+              <div className="space-y-2">
+                <label className="flex items-center space-x-2">
+                  <input type="checkbox" className="rounded border-gray-300" />
+                  <span className="text-sm text-gray-700">Refundable</span>
+                </label>
+                <label className="flex items-center space-x-2">
+                  <input type="checkbox" className="rounded border-gray-300" />
+                  <span className="text-sm text-gray-700">Non Refundable</span>
+                </label>
+              </div>
+            )}
           </div>
 
-          {/* Results Summary */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 mb-8">
-            <p className="text-blue-800 font-avenir text-lg">
-              <span className="font-semibold">{searchResults.length} results found</span> 
-              {editingService && <span> for {editingService}</span>}
-            </p>
-          </div>
+          {/* Main Content */}
+          <div className="flex-1 p-6">
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">Select your departure</h2>
+                <button className="text-sm text-blue-600 hover:text-blue-800">Show earlier trains</button>
+              </div>
+            </div>
 
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-          ) : (
-            <div className="space-y-0">
-              {searchResults.map((result) => {
-                if (result.type === 'flight') return renderFlightCard(result);
-                if (result.type === 'train') return renderTrainCard(result);
-                if (result.type === 'hotel') return renderHotelCard(result);
-                return null;
-              })}
-            </div>
-          )}
+            {loading ? (
+              <div className="flex items-center justify-center py-20">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              </div>
+            ) : (
+              <div className="space-y-0">
+                {searchResults.map((result) => {
+                  if (result.type === 'train') return renderTrainCard(result);
+                  if (result.type === 'flight') return renderFlightCard(result);
+                  if (result.type === 'hotel') return renderHotelCard(result);
+                  return null;
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
